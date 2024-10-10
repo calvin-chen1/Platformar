@@ -52,10 +52,10 @@ public class CubeTest {
         testPlatform = new Platform(testCube.getX()-(50/2), testCube.getY(), 50, 50, false);
         testCube.moveLeft();
         assertEquals(0, testCube.getSpeedX());
-        testPlatform = new Platform(testCube.getX(), testCube.getY()+(50/2), 50, 50, false);
+        testPlatform = new Platform(testCube.getX(), testCube.getY()+(100/2), 50, 50, false);
         testCube.jump();
         assertEquals(0, testCube.getSpeedY());
-        testPlatform = new Platform(testCube.getX(), testCube.getY()-(50/2), 50, 50, false);
+        testPlatform = new Platform(testCube.getX(), testCube.getY()-(100/2), 50, 50, false);
         assertEquals(0, testCube.getSpeedY());
     }
 }
