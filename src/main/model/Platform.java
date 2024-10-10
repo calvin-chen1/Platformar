@@ -59,13 +59,13 @@ public class Platform {
      * EFFECTS: gives the bottom border of the platform
      */
     public int borderBottom() {
-        return this.y - this.width;
+        return this.y - this.height;
     }
 
     /* REQUIRES: width >= 0 and height >= 0
      * EFFECTS: gives the top border of the platform
      */
     public int borderTop() {
-        return this.y + this.width;
+        return this.y + this.height;
     }
 }
