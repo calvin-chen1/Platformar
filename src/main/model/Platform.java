@@ -15,62 +15,57 @@ public class Platform {
      *          dimensions; and is determined if isLava
     */
     public Platform(int x, int y, int width, int height, boolean isLava) {
-        // TODO: implement
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.isLava = isLava;
     }
 
     public int getX() {
-        // TODO: implement
-        return 0;
+        return this.x;
     }
 
     public int getY() {
-        // TODO: implement
-        return 0;
+        return this.y;
     }
 
     public int getWidth() {
-        // TODO: implement
-        return 0;
+        return this.width;
     }
 
     public int getHeight() {
-        // TODO: implement
-        return 0;
+        return this.height;
     }
     public boolean getIsLava() {
-        // TODO: implement
-        return false;
+        return this.isLava;
     }
 
     /* REQUIRES: width >= 0 and height >= 0
      * EFFECTS: gives the right border of the platform
      */
     public int borderRight() {
-        // TODO: implement
-        return 0;
+        return this.x + this.width;
     }
 
     /* REQUIRES: width >= 0 and height >= 0
      * EFFECTS: gives the left border of the platform
      */
     public int borderLeft() {
-        // TODO: implement
-        return 0;
+        return this.x - this.width;
     }
 
     /* REQUIRES: width >= 0 and height >= 0
      * EFFECTS: gives the bottom border of the platform
      */
     public int borderBottom() {
-        // TODO: implement
-        return 0;
+        return this.y - this.width;
     }
 
     /* REQUIRES: width >= 0 and height >= 0
      * EFFECTS: gives the top border of the platform
      */
     public int borderTop() {
-        // TODO: implement
-        return 0;
+        return this.y + this.width;
     }
 }
