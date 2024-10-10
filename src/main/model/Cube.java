@@ -31,6 +31,16 @@ public class Cube {
         return 0;
     }
     
+    public double getSpeedX() {
+        // TODO: implement
+        return 0.0;
+    }
+
+    public double getSpeedY() {
+        // TODO: implement
+        return 0.0;
+    }
+    
     /* MODIFIES: this
      * EFFECTS: x position is incremented based on velocity speedX  
     */
