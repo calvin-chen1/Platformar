@@ -78,14 +78,20 @@ public class Cube {
      * and returns true or false based on if collision is detected
      */
     public boolean detectCollision(Platform p) {
-        if (this.width + this.x == p.getX() - p.getWidth() || this.x - this.width == p.getWidth() + p.getX()) {
+        if (this.width + this.x >= p.getX() - p.getWidth() && this.speedX > 0) {
             speedX = 0.0;
             return true;
-        } else if (this.height + this.y == p.getY() - p.getHeight()
-                || this.y - this.height == p.getHeight() + p.getY()) {
+        } else if (this.x - this.width <= p.getWidth() + p.getX() && this.speedX < 0) {
+            speedX = 0.0;
+            return true;
+        } else if (this.height + this.y >= p.getY() - p.getHeight() && this.speedY > 0) {
             speedY = 0.0;
             return true;
+        } else if (this.y - this.height <= p.getHeight() + p.getY() && this.speedY < 0) {
+            speedY = 0.0;
+            return true;
+        } else {
+            return false;
         }
-        return false;
     }
 }
