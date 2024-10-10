@@ -15,34 +15,36 @@ public class Collectible {
      *          idCount
      */
     public Collectible(int x, int y) {
-        //TODO: implement   
+        this.x = x;
+        this.y = y;
+        this.collected = false;
+        this.id = idCount;
+        idCount++;
     }
 
     public int getX() {
-        // TODO: implement
-        return 0;
+        return this.x;
     }
 
     public int getY() {
-        // TODO: implement
-        return 0;
+        return this.y;
     }
 
     public boolean getIsCollected() {
-        // TODO: implement
-        return false;
+        return this.collected;
     }
 
     public int getId() {
-        // TODO: implement
-        return 0;
+        return this.id;
     }
 
     /* REQUIRES: a Cube object must collide with the Collectible
      * MODFIES: this
      * EFFECTS: collected is set to true
      */
-    public void collect() {
-        // TODO: implement
+    public void collect(Cube c) {
+        if (c.getX() == this.x && c.getY() == this.y) {
+            collected = true;
+        }
     }
 }

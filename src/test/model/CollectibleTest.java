@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 
 public class CollectibleTest {
     private Collectible collectibleTest;
-    private Cube cubeTest;
 
     @BeforeEach
     void runBefore() {
@@ -26,9 +25,11 @@ public class CollectibleTest {
 
     @Test 
     void collectTest() {
+        collectibleTest.collect(new Cube(10, 90));
         assertFalse(collectibleTest.getIsCollected());
-        cubeTest = new Cube(50, 100);
-        collectibleTest.collect();
+        collectibleTest.collect(new Cube(50, 90));
+        assertFalse(collectibleTest.getIsCollected());
+        collectibleTest.collect(new Cube(50, 100));
         assertTrue(collectibleTest.getIsCollected());
     }
 }
