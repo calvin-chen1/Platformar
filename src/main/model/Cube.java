@@ -16,13 +16,16 @@ public class Cube {
     /*
      * REQUIRES: x and y positions to be valid positions on the frame
      * EFFECTS: x is set to a given x; y is set to a given y; width and
-     * height are always set to 50 and 100
+     * height are always set to 50 and 100; speedX and speedY is set to
+     * 1.0 at the beginning
      */
     public Cube(int x, int y) {
         this.x = x;
         this.y = y;
         this.width = 50;
         this.height = 100;
+        this.speedX = 1.0;
+        this.speedY = 1.0;
     }
 
     public int getX() {
@@ -46,6 +49,7 @@ public class Cube {
      * EFFECTS: x position is incremented based on velocity speedX
      */
     public void moveRight() {
+        this.speedX = 1.0;
         this.x += this.speedX;
     }
 
@@ -54,7 +58,8 @@ public class Cube {
      * EFFECTS: x position is decremented based on velocity speedX
      */
     public void moveLeft() {
-        this.x -= this.speedX;
+        this.speedX = -1.0;
+        this.x += this.speedX;
     }
 
     /*
@@ -63,11 +68,17 @@ public class Cube {
      * but eventually reaches a maximum height and falls
      */
     public void jump() {
+        speedY = 1.0;
         int originalY = this.y;
         this.y += this.speedY;
         if (y > originalY + 50) {
-            this.y -= this.speedY;
+            fall();
         }
+    }
+
+    public void fall() {
+        this.speedY = -1.0;
+        this.y += this.speedY;
     }
 
     /*
