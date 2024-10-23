@@ -22,7 +22,7 @@ public class Main {
         Scanner in = new Scanner(System.in);
         System.out.println("Welcome to the levels menu. Here are the current levels:");
         for (int i = 0; i < levels.size(); i++) {
-            System.out.print("[" + (i+1) + "] ");
+            System.out.print("[" + (i + 1) + "] ");
         }
         System.out.println();
         System.out.println("Select which one you would like to try.");
@@ -51,7 +51,7 @@ public class Main {
         
         menuScanner(in);
     }
-
+    
     private static void menuScanner(Scanner in) {
         LevelFrame game = new LevelFrame();
         int i = in.nextInt();
