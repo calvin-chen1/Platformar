@@ -17,8 +17,8 @@ public class CollectibleTest {
 
     @Test
     void testConstructor() {
-        assertEquals(50, collectibleTest.getX());
-        assertEquals(100, collectibleTest.getY());
+        assertEquals(50, collectibleTest.getX1());
+        assertEquals(100, collectibleTest.getY1());
         assertEquals(1, collectibleTest.getId());
         assertFalse(collectibleTest.getIsCollected());
     }

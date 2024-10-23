@@ -8,8 +8,8 @@ public class Cube {
     private double speedX; // X velocity of the cube
     private double speedY; // Y velocity of the cube
 
-    private int x; // the X value position of the cube
-    private int y; // the Y value position of the cube
+    private int x1; // the X value position of the cube
+    private int y1; // the Y value position of the cube
     private int width; // width of the cube
     private int height; // height of the cube
 
@@ -20,20 +20,20 @@ public class Cube {
      * 1.0 at the beginning
      */
     public Cube(int x, int y) {
-        this.x = x;
-        this.y = y;
+        this.x1 = x;
+        this.y1 = y;
         this.width = 50;
         this.height = 100;
         this.speedX = 1.0;
         this.speedY = 1.0;
     }
 
-    public int getX() {
-        return this.x;
+    public int getX1() {
+        return this.x1;
     }
 
-    public int getY() {
-        return this.y;
+    public int getY1() {
+        return this.y1;
     }
 
     public double getSpeedX() {
@@ -50,7 +50,7 @@ public class Cube {
      */
     public void moveRight() {
         this.speedX = 1.0;
-        this.x += this.speedX;
+        this.x1 += this.speedX;
     }
 
     /*
@@ -59,7 +59,7 @@ public class Cube {
      */
     public void moveLeft() {
         this.speedX = -1.0;
-        this.x += this.speedX;
+        this.x1 += this.speedX;
     }
 
     /*
@@ -69,16 +69,16 @@ public class Cube {
      */
     public void jump() {
         speedY = 1.0;
-        int originalY = this.y;
-        this.y += this.speedY;
-        if (y > originalY + 50) {
+        int originalY = this.y1;
+        this.y1 += this.speedY;
+        if (y1 > originalY + 50) {
             fall();
         }
     }
 
     public void fall() {
         this.speedY = -1.0;
-        this.y += this.speedY;
+        this.y1 += this.speedY;
     }
 
     /*
@@ -89,16 +89,16 @@ public class Cube {
      * and returns true or false based on if collision is detected
      */
     public boolean detectCollision(Platform p) {
-        if (this.width + this.x >= p.getX() - p.getWidth() && this.speedX > 0) {
+        if (this.width + this.x1 >= p.getX1() - p.getWidth() && this.speedX > 0) {
             speedX = 0.0;
             return true;
-        } else if (this.x - this.width <= p.getWidth() + p.getX() && this.speedX < 0) {
+        } else if (this.x1 - this.width <= p.getWidth() + p.getX1() && this.speedX < 0) {
             speedX = 0.0;
             return true;
-        } else if (this.height + this.y >= p.getY() - p.getHeight() && this.speedY > 0) {
+        } else if (this.height + this.y1 >= p.getY1() - p.getHeight() && this.speedY > 0) {
             speedY = 0.0;
             return true;
-        } else if (this.y - this.height <= p.getHeight() + p.getY() && this.speedY < 0) {
+        } else if (this.y1 - this.height <= p.getHeight() + p.getY1() && this.speedY < 0) {
             speedY = 0.0;
             return true;
         } else {

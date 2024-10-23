@@ -40,7 +40,6 @@ public class Main {
      * EFFECTS: prints out the menu for all of the options in platformer
      */
     public static void menu() {
-        LevelFrame game = new LevelFrame();
         Scanner in = new Scanner(System.in);
         System.out.println("-------------------------------------------------------");
         System.out.println("Welcome to Platformar! Choose your options (Enter 1-4):");
@@ -49,7 +48,12 @@ public class Main {
         System.out.println("    [3] View collectibles");
         System.out.println("    [4] Add a random level");
         System.out.println("-------------------------------------------------------");
+        
+        menuScanner(in);
+    }
 
+    private static void menuScanner(Scanner in) {
+        LevelFrame game = new LevelFrame();
         int i = in.nextInt();
         do {
             switch (i) {
@@ -72,7 +76,6 @@ public class Main {
                     i = in.nextInt();
             }
         } while (i < 1 || i > 4);
-
     }
 
     public static void main(String[] args) throws Exception {

@@ -135,7 +135,7 @@ public class LevelFrame {
             move(input);
         }
         in.close();
-        frame[cube.getX()][cube.getY()] = null;
+        frame[cube.getX1()][cube.getY1()] = null;
         Main.saveLevel(this.frame);
         System.out.println("Congratulations on finishing! Your level and collectible has been saved.");
     }
@@ -164,9 +164,9 @@ public class LevelFrame {
      * EFFECTS: moves the cube up if there is no platform
      */
     public void moveUp() {
-        if (cube.getX() - 1 >= 0 && frame[cube.getX()-1][cube.getY()] == null) {
-            frame[cube.getX()-1][cube.getY()] = cube;
-            frame[cube.getX()][cube.getY()] = null;
+        if (cube.getX1() - 1 >= 0 && frame[cube.getX1() - 1][cube.getY1()] == null) {
+            frame[cube.getX1() - 1][cube.getY1()] = cube;
+            frame[cube.getX1()][cube.getY1()] = null;
             cube.moveLeft();
             draw();
         }
@@ -176,9 +176,9 @@ public class LevelFrame {
      * EFFECTS: moves the cube right if there is no platform
      */
     public void moveRight() {
-        if (cube.getY() + 1 < frame[0].length && frame[cube.getX()][cube.getY()+1] == null) {
-            frame[cube.getX()][cube.getY()+1] = cube;
-            frame[cube.getX()][cube.getY()] = null;
+        if (cube.getY1() + 1 < frame[0].length && frame[cube.getX1()][cube.getY1() + 1] == null) {
+            frame[cube.getX1()][cube.getY1() + 1] = cube;
+            frame[cube.getX1()][cube.getY1()] = null;
             cube.jump();
             draw();
         }
@@ -188,9 +188,9 @@ public class LevelFrame {
      * EFFECTS: moves the cube down if there is no platform
      */
     public void moveDown() {
-        if (cube.getX() + 1 < frame.length && frame[cube.getX()+1][cube.getY()] == null) {
-            frame[cube.getX()+1][cube.getY()] = cube;
-            frame[cube.getX()][cube.getY()] = null;
+        if (cube.getX1() + 1 < frame.length && frame[cube.getX1() + 1][cube.getY1()] == null) {
+            frame[cube.getX1() + 1][cube.getY1()] = cube;
+            frame[cube.getX1()][cube.getY1()] = null;
             cube.moveRight();
             draw();
         }
@@ -200,9 +200,9 @@ public class LevelFrame {
      * EFFECTS: moves the cube left if there is no platform
      */
     public void moveLeft() {
-        if (cube.getY() - 1 >= 0 && frame[cube.getX()][cube.getY()-1] == null) {
-            frame[cube.getX()][cube.getY()-1] = cube;
-            frame[cube.getX()][cube.getY()] = null;
+        if (cube.getY1() - 1 >= 0 && frame[cube.getX1()][cube.getY1() - 1] == null) {
+            frame[cube.getX1()][cube.getY1() - 1] = cube;
+            frame[cube.getX1()][cube.getY1()] = null;
             cube.fall();
             draw();
         }
