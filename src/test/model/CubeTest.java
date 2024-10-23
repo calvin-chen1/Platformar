@@ -20,6 +20,8 @@ public class CubeTest {
     void constructorTest() {
         assertEquals(testCube.getX(), 500);
         assertEquals(testCube.getY(), 200);
+        assertEquals(testCube.getSpeedX(), 1.0);
+        assertEquals(testCube.getSpeedY(), 1.0);
     }
 
     @Test 
@@ -42,20 +44,31 @@ public class CubeTest {
         int y2 = testCube.getY();
         assertTrue(y1 < y2);
         assertFalse(y2 < y1);
+        while (testCube.getSpeedY() >= 0) {
+            testCube.jump();
+        }
+        assertEquals(testCube.getSpeedY(), -1.0);
     }
 
     @Test
     void testCollision() {
-        testPlatform = new Platform(testCube.getX()+(50/2), testCube.getY(), 50, 50, false);
+        testPlatform = new Platform(testCube.getX() + 50, testCube.getY(), 50, 50, false);
         testCube.moveRight();
-        assertEquals(0, testCube.getSpeedX());
-        testPlatform = new Platform(testCube.getX()-(50/2), testCube.getY(), 50, 50, false);
+        assertTrue(testCube.detectCollision(testPlatform));
+        assertEquals(testCube.getSpeedX(), 0);
+        testPlatform = new Platform(testCube.getX() - 50, testCube.getY(), 50, 50, false);
         testCube.moveLeft();
-        assertEquals(0, testCube.getSpeedX());
-        testPlatform = new Platform(testCube.getX(), testCube.getY()+(100/2), 50, 50, false);
+        assertTrue(testCube.detectCollision(testPlatform));
+        assertEquals(testCube.getSpeedX(), 0);
+
+        testPlatform = new Platform(testCube.getX(), testCube.getY() + 100, 50, 50, false);
         testCube.jump();
+        assertTrue(testCube.detectCollision(testPlatform));
         assertEquals(0, testCube.getSpeedY());
-        testPlatform = new Platform(testCube.getX(), testCube.getY()-(100/2), 50, 50, false);
+        testPlatform = new Platform(testCube.getX(), testCube.getY() - 100, 50, 50, false);
         assertEquals(0, testCube.getSpeedY());
+
+        testPlatform = new Platform(testCube.getX(), 0, 50, 50, false);
+        assertFalse(testCube.detectCollision(testPlatform));
     }
 }
