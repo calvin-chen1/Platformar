@@ -39,14 +39,12 @@ public class LevelFrame {
         for (int i = 0; i < frame.length; i++) {
             for (int j = 0; j < frame[0].length; j++) {
                 double f = Math.random();
-                if (platformCount < 3) {
-                    if (f <= 0.4 && frame[i][j] == null) {
+                if (f <= 0.4 && frame[i][j] == null && platformCount < 3) {
+                    if (Math.random() < 0.50) {
                         frame[i][j] = new Platform(i, j, 50, 50, false);
-                        platformCount++;
-                    } else if (f >= 0.8 && frame[i][j] == null) {
+                    } else
                         frame[i][j] = new Platform(i, j, 50, 50, true);
-                        platformCount++;
-                    }
+                    platformCount++;
                 }
             }
             platformCount = 0;
@@ -74,40 +72,41 @@ public class LevelFrame {
         return this.frame;
     }
 
-    /* 
+    /*
      * EFFECTS: clears the console screen
      */
-    public static void clearScreen() {   
-        System.out.print("\033[H\033[2J");   
-        System.out.flush();   
-    } 
+    public static void clearScreen() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
 
-    /* 
-     * REQUIRES: the x and y position of the Collectible object, distX < frame.length && distY < frame[0].length
+    /*
+     * REQUIRES: the x and y position of the Collectible object, distX <
+     * frame.length && distY < frame[0].length
      * EFFECTS: creates a path to the Collectible
      * MODIFIES: frame
      */
     private void makePath(int distX, int distY) {
         double pathChoose = Math.random();
-        if (distX < 1 || distY < 2) 
+        if (distX < 1 || distY < 2)
             pathShort();
         else if (pathChoose < 0.50) {
             for (int i = 3; i < distY; i++) {
-                if (frame[1][i] != null) 
-                    frame[1][i] = null; 
+                if (frame[1][i] != null)
+                    frame[1][i] = null;
             }
             for (int j = 2; j < distX; j++) {
-                if (frame[j][distY] != null) 
+                if (frame[j][distY] != null)
                     frame[j][distY] = null;
             }
         } else {
             for (int j = 2; j < distX; j++) {
-                if (frame[j][2] != null) 
+                if (frame[j][2] != null)
                     frame[j][2] = null;
             }
             for (int i = 3; i < distY; i++) {
-                if (frame[distX][i] != null) 
-                    frame[distX][i] = null; 
+                if (frame[distX][i] != null)
+                    frame[distX][i] = null;
             }
         }
     }
@@ -128,19 +127,20 @@ public class LevelFrame {
         System.out.println();
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                Platform f = new Platform(i, j, 50, 50, true);
                 Object current = this.frame[i][j];
                 if (current == null) {
                     System.out.print("    ");
-                } else if (current.equals(f)) {
-                    System.out.print("[=] ");
+                } else if (current.toString().substring(0, 14).equals("model.Platform")) {
+                    Platform temp = (Platform) current;
+                    if (temp.getIsLava())
+                        System.out.print("[=] ");
+                    else
+                        System.out.print("[-] ");
                 } else if (current.equals(this.cube)) {
                     System.out.print("{:} ");
-                } else if (current.equals(this.collectible)) {
+                } else {
                     System.out.print("(~) ");
                     this.frame[i][j] = null;
-                } else {
-                    System.out.print("[-] ");
                 }
             }
             System.out.println();
@@ -182,7 +182,7 @@ public class LevelFrame {
      */
     public void start() {
         Scanner in = new Scanner(System.in);
-        System.out.println("[-] is lava. {:} is you. (~) is your goal.");
+        System.out.println("[=] is lava. {:} is you. (~) is your goal.");
         draw();
         System.out.println("Controls: Type w for up, d for right, s for down, a for left.");
         while (!checkCollectible()) {
@@ -222,16 +222,25 @@ public class LevelFrame {
      * EFFECTS: moves the cube up if there is no platform
      */
     public void moveUp() {
+        clearScreen();
         if (cube.getX1() - 1 >= 0 && frame[cube.getX1() - 1][cube.getY1()] == null) {
             frame[cube.getX1() - 1][cube.getY1()] = cube;
             frame[cube.getX1()][cube.getY1()] = null;
             cube.moveLeft();
-            clearScreen();
             draw();
-        } else {
-            clearScreen();
-            draw(); 
-            System.out.println("Invalid action, please try 'a', 's', or 'd'");
+        } else if (frame[cube.getX1() - 1][cube.getY1()].toString().substring(0, 14).equals("model.Platform")) {
+            Platform temp = (Platform) frame[cube.getX1() - 1][cube.getY1()];
+            if (temp.getIsLava()) {
+                frame[cube.getX1()][cube.getY1()] = null;
+                cube.resetPosition();
+                frame[1][2] = cube;
+                draw();
+                System.out.println("You ran into lava! Your position is reset.");
+            }
+            else {
+                draw(); 
+                System.out.println("Invalid action, please try 'a', 'w', or 'd'");
+            }
         }
     }
 
@@ -240,16 +249,24 @@ public class LevelFrame {
      * EFFECTS: moves the cube right if there is no platform
      */
     public void moveRight() {
+        clearScreen();
         if (cube.getY1() + 1 < frame[0].length && frame[cube.getX1()][cube.getY1() + 1] == null) {
             frame[cube.getX1()][cube.getY1() + 1] = cube;
             frame[cube.getX1()][cube.getY1()] = null;
             cube.jump();
-            clearScreen();
             draw();
-        } else {
-            clearScreen();
-            draw(); 
-            System.out.println("Invalid action, please try 'a', 's', or 'w'");
+        } else if (frame[cube.getX1()][cube.getY1() + 1].toString().substring(0, 14).equals("model.Platform")) {
+            Platform temp = (Platform) frame[cube.getX1()][cube.getY1() + 1];
+            if (temp.getIsLava()) {
+                frame[cube.getX1()][cube.getY1()] = null;
+                cube.resetPosition();
+                frame[1][2] = cube;
+                draw();
+                System.out.println("You ran into lava! Your position is reset.");
+            } else {
+                draw();
+                System.out.println("Invalid action, please try 'a', 'w', or 'd'");
+            }
         }
     }
 
@@ -258,16 +275,24 @@ public class LevelFrame {
      * EFFECTS: moves the cube down if there is no platform
      */
     public void moveDown() {
+        clearScreen();
         if (cube.getX1() + 1 < frame.length && frame[cube.getX1() + 1][cube.getY1()] == null) {
             frame[cube.getX1() + 1][cube.getY1()] = cube;
             frame[cube.getX1()][cube.getY1()] = null;
             cube.moveRight();
-            clearScreen();
             draw();
-        } else {
-            clearScreen();
-            draw(); 
-            System.out.println("Invalid action, please try 'a', 'w', or 'd'");
+        } else if (frame[cube.getX1() + 1][cube.getY1()].toString().substring(0, 14).equals("model.Platform")) {
+            Platform temp = (Platform) frame[cube.getX1() + 1][cube.getY1()];
+            if (temp.getIsLava()) {
+                frame[cube.getX1()][cube.getY1()] = null;
+                cube.resetPosition();
+                frame[1][2] = cube;
+                draw();
+                System.out.println("You ran into lava! Your position is reset.");
+            } else {
+                draw();
+                System.out.println("Invalid action, please try 'a', 'w', or 'd'");
+            }
         }
     }
 
@@ -276,16 +301,24 @@ public class LevelFrame {
      * EFFECTS: moves the cube left if there is no platform
      */
     public void moveLeft() {
+        clearScreen();
         if (cube.getY1() - 1 >= 0 && frame[cube.getX1()][cube.getY1() - 1] == null) {
             frame[cube.getX1()][cube.getY1() - 1] = cube;
             frame[cube.getX1()][cube.getY1()] = null;
             cube.fall();
-            clearScreen();
             draw();
-        } else {
-            clearScreen();
-            draw(); 
-            System.out.println("Invalid action, please try 'w', 's', or 'd'");
+        } else if (frame[cube.getX1()][cube.getY1() - 1].toString().substring(0, 14).equals("model.Platform")) {
+            Platform temp = (Platform) frame[cube.getX1()][cube.getY1() - 1];
+            if (temp.getIsLava()) {
+                frame[cube.getX1()][cube.getY1()] = null;
+                cube.resetPosition();
+                frame[1][2] = cube;
+                draw();
+                System.out.println("You ran into lava! Your position is reset.");
+            } else {
+                draw();
+                System.out.println("Invalid action, please try 'a', 'w', or 'd'");
+            }
         }
     }
 }
