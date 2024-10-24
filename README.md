@@ -13,6 +13,8 @@ experience for me to see if it is something I want to continue doing.
 - As a user, I want to be able to choose from a *list* of different levels that I have completed already.
 - As a user, I want my movement to be quick and responsive.
 - As a user, I want to see unique design for different levels.
-- As a user, I want to have a specific goal to have a reason for jumping around.
-- As a user, I want to be able to pause the game whenever I need to.
+- As a user, I want to have a specific goal to reach.
+- As a user, I want to be able to pause the game whenever I need to by quitting and rerunning to be prompted if I want to continue where I left off.
 - As a user, I have to be able to complete levels with a fair amount of challenge.
+- As a user, I want my collectibles to be saved across multiple sessions and able to reset my list of them at any given time.
+- As a user, I also want the same to apply to levels, where I can save, view, and reset the saved list.
