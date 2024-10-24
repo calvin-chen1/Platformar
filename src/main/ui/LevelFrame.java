@@ -3,12 +3,15 @@ package ui;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import persistence.Writable;
+import org.json.JSONObject;
+
 import model.Cube;
 import model.Platform;
 import model.Collectible;
 
 // Constructs the frame which the game is played on
-public class LevelFrame {
+public class LevelFrame implements Writable {
     private Object[][] frame; // 2D array for the platfomer
     private Cube cube; // cube controlled by the user
     private Collectible collectible; // collectible that is the end goal
@@ -320,5 +323,16 @@ public class LevelFrame {
                 System.out.println("Invalid action, please try 'a', 'w', or 'd'");
             }
         }
+    }
+
+    /* 
+     * REQUIRES: JSONObject
+     * EFFECTS: converts object data to json formatting
+     */
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("type", frame);
+        return json;
     }
 }
