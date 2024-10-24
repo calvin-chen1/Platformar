@@ -69,6 +69,7 @@ public class Main {
                 case 4:
                     levels.add(new LevelFrame().getFrame());
                     System.out.println("Added a randomized level to the levels list.");
+                    LevelFrame.clearScreen();
                     menu();
                     break;
                 default:

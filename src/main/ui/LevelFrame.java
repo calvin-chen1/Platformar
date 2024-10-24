@@ -40,7 +40,7 @@ public class LevelFrame {
             for (int j = 0; j < frame[0].length; j++) {
                 double f = Math.random();
                 if (platformCount < 3) {
-                    if (f <= 0.5 && frame[i][j] == null) {
+                    if (f <= 0.4 && frame[i][j] == null) {
                         frame[i][j] = new Platform(i, j, 50, 50, false);
                         platformCount++;
                     } else if (f >= 0.8 && frame[i][j] == null) {
@@ -73,6 +73,14 @@ public class LevelFrame {
     public Object[][] getFrame() {
         return this.frame;
     }
+
+    /* 
+     * EFFECTS: clears the console screen
+     */
+    public static void clearScreen() {   
+        System.out.print("\033[H\033[2J");   
+        System.out.flush();   
+    } 
 
     /* 
      * REQUIRES: the x and y position of the Collectible object, distX < frame.length && distY < frame[0].length
@@ -218,8 +226,10 @@ public class LevelFrame {
             frame[cube.getX1() - 1][cube.getY1()] = cube;
             frame[cube.getX1()][cube.getY1()] = null;
             cube.moveLeft();
+            clearScreen();
             draw();
         } else {
+            clearScreen();
             draw(); 
             System.out.println("Invalid action, please try 'a', 's', or 'd'");
         }
@@ -234,8 +244,10 @@ public class LevelFrame {
             frame[cube.getX1()][cube.getY1() + 1] = cube;
             frame[cube.getX1()][cube.getY1()] = null;
             cube.jump();
+            clearScreen();
             draw();
         } else {
+            clearScreen();
             draw(); 
             System.out.println("Invalid action, please try 'a', 's', or 'w'");
         }
@@ -250,8 +262,10 @@ public class LevelFrame {
             frame[cube.getX1() + 1][cube.getY1()] = cube;
             frame[cube.getX1()][cube.getY1()] = null;
             cube.moveRight();
+            clearScreen();
             draw();
         } else {
+            clearScreen();
             draw(); 
             System.out.println("Invalid action, please try 'a', 'w', or 'd'");
         }
@@ -266,8 +280,10 @@ public class LevelFrame {
             frame[cube.getX1()][cube.getY1() - 1] = cube;
             frame[cube.getX1()][cube.getY1()] = null;
             cube.fall();
+            clearScreen();
             draw();
         } else {
+            clearScreen();
             draw(); 
             System.out.println("Invalid action, please try 'w', 's', or 'd'");
         }
