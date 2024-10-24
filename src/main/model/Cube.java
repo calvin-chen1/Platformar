@@ -1,10 +1,12 @@
 package model;
 
-import org.junit.jupiter.api.TestMethodOrder;
+import org.json.JSONObject;
+import persistence.Writable;
 
 // The Cube class represents the cube that the user will be controlling 
 // with set speed, borders, and position 
-public class Cube {
+public class Cube implements Writable {
+    private Type type;
     private double speedX; // X velocity of the cube
     private double speedY; // Y velocity of the cube
 
@@ -12,6 +14,9 @@ public class Cube {
     private int y1; // the Y value position of the cube
     private int width; // width of the cube
     private int height; // height of the cube
+
+    private final int INITAL_X = 1;
+    private final int INTIAL_Y = 2;
 
     /*
      * REQUIRES: x and y positions to be valid positions on the frame
@@ -26,6 +31,7 @@ public class Cube {
         this.height = 100;
         this.speedX = 1.0;
         this.speedY = 1.0;
+        this.type = Type.values()[1];
     }
 
     public int getX1() {
@@ -81,6 +87,10 @@ public class Cube {
         this.y1 += this.speedY;
     }
 
+    public void resetPosition() {
+        this.x1 = INITAL_X;
+        this.y1 = INTIAL_Y;
+    }
     /*
      * REQUIRES: x and y positions are touching a platform and a platform is
      * specified
@@ -104,5 +114,14 @@ public class Cube {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("type", type);
+        json.put("x value", x1);
+        json.put("y value", y1);
+        return json;
     }
 }

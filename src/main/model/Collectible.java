@@ -1,8 +1,12 @@
 package model;
 
+import org.json.JSONObject;
+import persistence.Writable;
+
 // The Collectible class represents unique collectibles
 // where it can be picked up and stored by the Cube user
-public class Collectible {
+public class Collectible implements Writable {
+    private Type type;
     private int x1;              // x pos
     private int y1;              // y pos
     private boolean collected;  // false for not collected, true for collected
@@ -20,6 +24,7 @@ public class Collectible {
         this.collected = false;
         this.id = idCount;
         idCount++;
+        this.type = Type.values()[0];
     }
 
     public int getX1() {
@@ -46,5 +51,16 @@ public class Collectible {
         if (c.getX1() == this.x1 && c.getY1() == this.y1) {
             collected = true;
         }
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("type", type);
+        json.put("x value", x1);
+        json.put("y value", y1);
+        json.put("collected", collected);
+        json.put("id", id);
+        return json;
     }
 }

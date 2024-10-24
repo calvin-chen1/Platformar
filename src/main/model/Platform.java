@@ -1,8 +1,12 @@
 package model;
 
+import org.json.JSONObject;
+import persistence.Writable;
+
 // The Platform class represents each block that the user as a Cube
 // moves on and collides with
-public class Platform {
+public class Platform implements Writable {
+    private Type type;
     private int x1;          // x pos
     private int y1;          // y pos
     private int width;      // width of the platform
@@ -20,6 +24,7 @@ public class Platform {
         this.width = width;
         this.height = height;
         this.isLava = isLava;
+        this.type = Type.values()[2];
     }
 
     public int getX1() {
@@ -68,5 +73,15 @@ public class Platform {
      */
     public int borderTop() {
         return this.y1 + this.height;
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("type", type);
+        json.put("x value", x1);
+        json.put("y value", y1);
+        json.put("is lava?", isLava);
+        return json;
     }
 }
