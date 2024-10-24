@@ -75,6 +75,10 @@ public class Platform implements Writable {
         return this.y1 + this.height;
     }
 
+    /* 
+     * REQUIRES: JSONObject
+     * EFFECTS: converts object data to json formatting
+     */
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();

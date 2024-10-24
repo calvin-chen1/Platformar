@@ -43,7 +43,8 @@ public class Collectible implements Writable {
         return this.id;
     }
 
-    /* REQUIRES: a Cube object must collide with the Collectible
+    /* 
+     * REQUIRES: a Cube object must collide with the Collectible
      * MODFIES: this
      * EFFECTS: collected is set to true
      */
@@ -53,6 +54,10 @@ public class Collectible implements Writable {
         }
     }
 
+    /* 
+     * REQUIRES: JSONObject
+     * EFFECTS: converts object data to json formatting
+     */
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();

@@ -87,6 +87,10 @@ public class Cube implements Writable {
         this.y1 += this.speedY;
     }
 
+    /* 
+     * REQUIRES: x1 and y1
+     * EFFECTS: this
+     */
     public void resetPosition() {
         this.x1 = INITAL_X;
         this.y1 = INTIAL_Y;
@@ -116,6 +120,10 @@ public class Cube implements Writable {
         }
     }
 
+    /* 
+     * REQUIRES: JSONObject
+     * EFFECTS: converts object data to json formatting
+     */
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
