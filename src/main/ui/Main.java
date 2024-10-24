@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 
 public class Main {
-    private static ArrayList<Object[][]> levels = new ArrayList<>();
+    protected static ArrayList<Object[][]> levels = new ArrayList<>();
 
     /*
      * REQUIRES: 2D Object array (frame)
