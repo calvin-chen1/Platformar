@@ -49,6 +49,10 @@ public class JsonReader {
         }
     }
 
+    /* REQUIRES: autosave.json
+     * EFFECTS: on application run, read the autosave.json file and store in clist and
+     * levels
+     */
     public void autoRead() throws IOException {
         ArrayList<Collectible> clist = LevelFrame.getClist();
         ArrayList<Object[][]> levels = LevelFrame.getLevels();
@@ -66,6 +70,9 @@ public class JsonReader {
         }
     }
     
+    /* 
+     * EFFECTS: adds collectibles to clist from reading the autosave
+     */
     private void addCollectible(ArrayList<Collectible> clist, JSONObject jsonObject) {
         int x = jsonObject.getInt("x value");
         int y = jsonObject.getInt("y value");
@@ -73,6 +80,9 @@ public class JsonReader {
         clist.add(c);
     }
 
+    /* REQUIRES: jsonArray
+     * EFFECTS: goes through jsonArray and sets corresponding values to return as an Object[][]
+     */
     private Object[][] parseLevels(JSONArray jsonArray) {
         Object[][] frame = new Object[8][8];
         List<Object> jsonList = jsonArray.toList();
@@ -89,6 +99,9 @@ public class JsonReader {
         return frame;
     }
 
+    /* REQUIRES: jsonArray
+     * EFFECTS: goes through jsonArray and sets corresponding values to return as an Object[][]
+     */
     private Object[][] parseLevelFrame(JSONArray jsonArray) {
         Object[][] frame = new Object[8][8];
         List<Object> jsonList = jsonArray.toList();
