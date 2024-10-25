@@ -18,7 +18,7 @@ public class LevelFrame {
     private Cube cube; // cube controlled by the user
     private Collectible collectible; // collectible that is the end goal
     private int rand; // random number
-    private static ArrayList<Collectible> cList = new ArrayList<>(); // list of collected collectibles
+    private static ArrayList<Collectible> clist = new ArrayList<>(); // list of collected collectibles
     private static ArrayList<Object[][]> levels = new ArrayList<>(); // list of levels finished or randomly added
 
     /*
@@ -64,7 +64,7 @@ public class LevelFrame {
      */
     public LevelFrame(Object[][] frame) {
         cube = new Cube(1, 2);
-        cList = new ArrayList<>();
+        clist = new ArrayList<>();
         levels = new ArrayList<>();
         rand = (int) (Math.random() * 8);
         collectible = new Collectible(rand, rand);
@@ -81,8 +81,8 @@ public class LevelFrame {
         return levels;
     }
 
-    public static ArrayList<Collectible> getCList() {
-        return cList;
+    public static ArrayList<Collectible> getClist() {
+        return clist;
     }
 
     /*
@@ -100,20 +100,25 @@ public class LevelFrame {
      * MODIFIES: frame
      */
     private void makePath(int distX, int distY) {
-        double pathChoose = Math.random();
         if (distX < 1 || distY < 2) {
             pathShort();
-        } else if (pathChoose < 0.50) {
-            for (int i = 3; i < distY; i++) {
-                if (frame[1][i] != null) {
-                    frame[1][i] = null;
-                }
-            }
-            for (int j = 2; j < distX; j++) {
-                if (frame[j][distY] != null) {
-                    frame[j][distY] = null;
-                }
-            }
+        } else {
+            pathLong(distX, distY);
+        }
+    }
+
+    /*
+     * EFFECTS: creates a short path to the collectible
+     */
+    private void pathShort() {
+        frame[0][1] = null;
+        frame[0][2] = null;
+    }
+
+    private void pathLong(int distX, int distY) {
+        double pathChoose = Math.random();
+        if (pathChoose < 0.50) {
+            lpath(distX, distY);
         } else {
             for (int j = 2; j < distX; j++) {
                 if (frame[j][2] != null) {
@@ -128,12 +133,17 @@ public class LevelFrame {
         }
     }
 
-    /*
-     * EFFECTS: creates a short path to the collectible
-     */
-    private void pathShort() {
-        frame[0][1] = null;
-        frame[0][2] = null;
+    private void lpath(int distX, int distY) {
+        for (int i = 3; i < distY; i++) {
+            if (frame[1][i] != null) {
+                frame[1][i] = null;
+            }
+        }
+        for (int j = 2; j < distX; j++) {
+            if (frame[j][distY] != null) {
+                frame[j][distY] = null;
+            }
+        }
     }
 
     /*
@@ -176,7 +186,7 @@ public class LevelFrame {
     public boolean checkCollectible() {
         this.collectible.collect(this.cube);
         if (collectible.getIsCollected()) {
-            cList.add(collectible);
+            clist.add(collectible);
             return true;
         }
         return false;
@@ -188,7 +198,7 @@ public class LevelFrame {
      */
     public void viewCollectibles() {
         System.out.println("Welcome to your collectible collection! Take a look.");
-        for (Collectible c : cList) {
+        for (Collectible c : clist) {
             System.out.println("Collectible #" + c.getId());
         }
     }
@@ -201,11 +211,12 @@ public class LevelFrame {
      * complete
      */
     public void start() {
-        JsonWriter jWriter = new JsonWriter("./data/autosave.json");
+        JsonWriter writer = new JsonWriter("./data/autosave.json");
         Scanner in = new Scanner(System.in);
         System.out.println("[=] is lava. {:} is you. (~) is your goal.");
         draw();
-        System.out.println("Controls: Type w for up, d for right, s for down, a for left. Type /q if you wish to leave.");
+        System.out
+                .println("Controls: Type w for up, d for right, s for down, a for left. Type /q if you wish to leave.");
         while (!checkCollectible()) {
             String input = in.next();
             move(input);
@@ -214,10 +225,10 @@ public class LevelFrame {
         frame[1][2] = cube;
         levels.add(frame);
         try {
-            jWriter.open();
-            jWriter.autoWrite();
+            writer.open();
+            writer.autoWrite();
             System.out.println("Congratulations on finishing! Your level and collectible has been saved.");
-            jWriter.close();
+            writer.close();
         } catch (FileNotFoundException e) {
             System.out.println("Unable to write to file");
         }
@@ -378,14 +389,14 @@ public class LevelFrame {
 
     public static JSONObject autoSave() {
         JSONObject json = new JSONObject();
-        json.put("collectibles", cListToJson());
+        json.put("collectibles", clistToJson());
         json.put("levels", levelsToJson());
         return json;
     }
 
-    private static JSONArray cListToJson() {
+    private static JSONArray clistToJson() {
         JSONArray json = new JSONArray();
-        for (Collectible c : cList) {
+        for (Collectible c : clist) {
             json.put(c.toJson());
         }
         return json;
