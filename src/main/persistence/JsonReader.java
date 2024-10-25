@@ -1,4 +1,5 @@
 package persistence;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -49,14 +50,14 @@ public class JsonReader {
     }
 
     public void autoRead() throws IOException {
-        ArrayList<Collectible> cList = LevelFrame.getCList();
+        ArrayList<Collectible> clist = LevelFrame.getClist();
         ArrayList<Object[][]> levels = LevelFrame.getLevels();
         String jsonData = readFile(source);
         JSONObject jsonObject = new JSONObject(jsonData);
         JSONArray jsonArray = jsonObject.getJSONArray("collectibles");
         for (Object json : jsonArray) {
             JSONObject collectible = (JSONObject) json;
-            addCollectible(cList, collectible);
+            addCollectible(clist, collectible);
         }
         JSONArray jsonLevels = jsonObject.getJSONArray("levels");
         for (Object json : jsonLevels) {
@@ -65,14 +66,13 @@ public class JsonReader {
         }
     }
     
-    private void addCollectible(ArrayList<Collectible> cList, JSONObject jsonObject) {
+    private void addCollectible(ArrayList<Collectible> clist, JSONObject jsonObject) {
         int x = jsonObject.getInt("x value");
         int y = jsonObject.getInt("y value");
         Collectible c = new Collectible(x, y);
-        cList.add(c);
+        clist.add(c);
     }
 
-    @SuppressWarnings("unchecked")
     private Object[][] parseLevels(JSONArray jsonArray) {
         Object[][] frame = new Object[8][8];
         List<Object> jsonList = jsonArray.toList();
@@ -89,7 +89,6 @@ public class JsonReader {
         return frame;
     }
 
-    @SuppressWarnings("unchecked")
     private Object[][] parseLevelFrame(JSONArray jsonArray) {
         Object[][] frame = new Object[8][8];
         List<Object> jsonList = jsonArray.toList();

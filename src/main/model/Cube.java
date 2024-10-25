@@ -15,9 +15,6 @@ public class Cube implements Writable {
     private int width; // width of the cube
     private int height; // height of the cube
 
-    private final int INITAL_X = 1;
-    private final int INTIAL_Y = 2;
-
     /*
      * REQUIRES: x and y positions to be valid positions on the frame
      * EFFECTS: x is set to a given x; y is set to a given y; width and
@@ -92,9 +89,10 @@ public class Cube implements Writable {
      * EFFECTS: this
      */
     public void resetPosition() {
-        this.x1 = INITAL_X;
-        this.y1 = INTIAL_Y;
+        this.x1 = 1;
+        this.y1 = 2;
     }
+    
     /*
      * REQUIRES: x and y positions are touching a platform and a platform is
      * specified
