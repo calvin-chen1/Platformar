@@ -1,0 +1,197 @@
+{
+    "collectibles": [{
+       "y value": 5,
+       "x value": 5,
+       "collected": true,
+       "id": 3,
+       "type": "COLLECTIBLE"
+    }],
+    "levels": [[
+       [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          {
+             "y1": 6,
+             "width": 50,
+             "x1": 0,
+             "isLava": true,
+             "height": 50
+          },
+          null
+       ],
+       [
+          null,
+          {
+             "y1": 1,
+             "width": 50,
+             "x1": 1,
+             "isLava": true,
+             "height": 50
+          },
+          {
+             "speedY": -1,
+             "speedX": 1,
+             "y1": 5,
+             "x1": 5
+          },
+          null,
+          {
+             "y1": 4,
+             "width": 50,
+             "x1": 1,
+             "isLava": false,
+             "height": 50
+          },
+          null,
+          null,
+          null
+       ],
+       [
+          {
+             "y1": 0,
+             "width": 50,
+             "x1": 2,
+             "isLava": true,
+             "height": 50
+          },
+          null,
+          null,
+          null,
+          null,
+          {
+             "y1": 5,
+             "width": 50,
+             "x1": 2,
+             "isLava": true,
+             "height": 50
+          },
+          {
+             "y1": 6,
+             "width": 50,
+             "x1": 2,
+             "isLava": true,
+             "height": 50
+          },
+          null
+       ],
+       [
+          null,
+          null,
+          null,
+          null,
+          {
+             "y1": 4,
+             "width": 50,
+             "x1": 3,
+             "isLava": true,
+             "height": 50
+          },
+          {
+             "y1": 5,
+             "width": 50,
+             "x1": 3,
+             "isLava": true,
+             "height": 50
+          },
+          null,
+          null
+       ],
+       [
+          null,
+          null,
+          null,
+          {
+             "y1": 3,
+             "width": 50,
+             "x1": 4,
+             "isLava": false,
+             "height": 50
+          },
+          null,
+          null,
+          {
+             "y1": 6,
+             "width": 50,
+             "x1": 4,
+             "isLava": false,
+             "height": 50
+          },
+          null
+       ],
+       [
+          {
+             "y1": 0,
+             "width": 50,
+             "x1": 5,
+             "isLava": false,
+             "height": 50
+          },
+          null,
+          {
+             "y1": 2,
+             "width": 50,
+             "x1": 5,
+             "isLava": false,
+             "height": 50
+          },
+          null,
+          null,
+          {
+             "y1": 5,
+             "x1": 5,
+             "id": 3,
+             "isCollected": true
+          },
+          null,
+          null
+       ],
+       [
+          {
+             "y1": 0,
+             "width": 50,
+             "x1": 6,
+             "isLava": true,
+             "height": 50
+          },
+          {
+             "y1": 1,
+             "width": 50,
+             "x1": 6,
+             "isLava": true,
+             "height": 50
+          },
+          null,
+          {
+             "y1": 3,
+             "width": 50,
+             "x1": 6,
+             "isLava": true,
+             "height": 50
+          },
+          null,
+          null,
+          null,
+          null
+       ],
+       [
+          null,
+          null,
+          null,
+          {
+             "y1": 3,
+             "width": 50,
+             "x1": 7,
+             "isLava": true,
+             "height": 50
+          },
+          null,
+          null,
+          null,
+          null
+       ]
+    ]]
+ }
