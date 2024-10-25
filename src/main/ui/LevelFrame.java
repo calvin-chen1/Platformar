@@ -3,20 +3,20 @@ package ui;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import persistence.Writable;
-import org.json.JSONObject;
+import org.json.JSONArray;
 
 import model.Cube;
 import model.Platform;
 import model.Collectible;
 
 // Constructs the frame which the game is played on
-public class LevelFrame implements Writable {
+public class LevelFrame {
     private Object[][] frame; // 2D array for the platfomer
     private Cube cube; // cube controlled by the user
     private Collectible collectible; // collectible that is the end goal
     private int rand; // random number
     private static ArrayList<Collectible> cList; // list of collected collectibles
+    protected static ArrayList<Object[][]> levels; // list of levels finished or randomly added
 
     /*
      * REQUIRES: Indexes within the bounds of the 2D array
@@ -35,6 +35,7 @@ public class LevelFrame implements Writable {
         rand = (int) (Math.random() * 8);
         collectible = new Collectible(rand, rand);
         cList = new ArrayList<>();
+        levels = new ArrayList<>();
         frame = new Object[8][8];
         frame[rand][rand] = collectible;
         frame[1][2] = cube;
@@ -64,6 +65,7 @@ public class LevelFrame implements Writable {
     public LevelFrame(Object[][] frame) {
         cube = new Cube(1, 2);
         cList = new ArrayList<>();
+        levels = new ArrayList<>();
         rand = (int) (Math.random() * 8);
         collectible = new Collectible(rand, rand);
         this.frame = frame;
@@ -73,6 +75,10 @@ public class LevelFrame implements Writable {
 
     public Object[][] getFrame() {
         return this.frame;
+    }
+
+    public static ArrayList<Object[][]> getLevels() {
+        return levels;
     }
 
     /*
@@ -143,7 +149,6 @@ public class LevelFrame implements Writable {
                     System.out.print("{:} ");
                 } else {
                     System.out.print("(~) ");
-                    this.frame[i][j] = null;
                 }
             }
             System.out.println();
@@ -193,7 +198,8 @@ public class LevelFrame implements Writable {
             move(input);
         }
         in.close();
-        frame[cube.getX1()][cube.getY1()] = null;
+        frame[1][2] = cube;
+        levels.add(frame);
         Main.saveLevel(this.frame);
         System.out.println("Congratulations on finishing! Your level and collectible has been saved.");
     }
@@ -226,7 +232,8 @@ public class LevelFrame implements Writable {
      */
     public void moveUp() {
         clearScreen();
-        if (cube.getX1() - 1 >= 0 && frame[cube.getX1() - 1][cube.getY1()] == null) {
+        if (cube.getX1() - 1 >= 0 && frame[cube.getX1() - 1][cube.getY1()] == null
+                || (frame[cube.getX1()- 1][cube.getY1()] instanceof Collectible)) {
             frame[cube.getX1() - 1][cube.getY1()] = cube;
             frame[cube.getX1()][cube.getY1()] = null;
             cube.moveLeft();
@@ -239,9 +246,8 @@ public class LevelFrame implements Writable {
                 frame[1][2] = cube;
                 draw();
                 System.out.println("You ran into lava! Your position is reset.");
-            }
-            else {
-                draw(); 
+            } else {
+                draw();
                 System.out.println("Invalid action, please try 'a', 'w', or 'd'");
             }
         }
@@ -253,7 +259,8 @@ public class LevelFrame implements Writable {
      */
     public void moveRight() {
         clearScreen();
-        if (cube.getY1() + 1 < frame[0].length && frame[cube.getX1()][cube.getY1() + 1] == null) {
+        if (cube.getY1() + 1 < frame[0].length && frame[cube.getX1()][cube.getY1() + 1] == null
+                || (frame[cube.getX1()][cube.getY1() + 1] instanceof Collectible)) {
             frame[cube.getX1()][cube.getY1() + 1] = cube;
             frame[cube.getX1()][cube.getY1()] = null;
             cube.jump();
@@ -279,7 +286,8 @@ public class LevelFrame implements Writable {
      */
     public void moveDown() {
         clearScreen();
-        if (cube.getX1() + 1 < frame.length && frame[cube.getX1() + 1][cube.getY1()] == null) {
+        if (cube.getX1() + 1 < frame.length && frame[cube.getX1() + 1][cube.getY1()] == null
+                || (frame[cube.getX1() + 1][cube.getY1()] instanceof Collectible)) {
             frame[cube.getX1() + 1][cube.getY1()] = cube;
             frame[cube.getX1()][cube.getY1()] = null;
             cube.moveRight();
@@ -305,7 +313,8 @@ public class LevelFrame implements Writable {
      */
     public void moveLeft() {
         clearScreen();
-        if (cube.getY1() - 1 >= 0 && frame[cube.getX1()][cube.getY1() - 1] == null) {
+        if (cube.getY1() - 1 >= 0 && frame[cube.getX1()][cube.getY1() - 1] == null
+                || (frame[cube.getX1()][cube.getY1() - 1] instanceof Collectible)) {
             frame[cube.getX1()][cube.getY1() - 1] = cube;
             frame[cube.getX1()][cube.getY1()] = null;
             cube.fall();
@@ -325,14 +334,15 @@ public class LevelFrame implements Writable {
         }
     }
 
-    /* 
-     * REQUIRES: JSONObject
+    /*
+     * REQUIRES: JSONArray
      * EFFECTS: converts object data to json formatting
      */
-    @Override
-    public JSONObject toJson() {
-        JSONObject json = new JSONObject();
-        json.put("type", frame);
+    public JSONArray toJson() {
+        JSONArray json = new JSONArray();
+        json.put(frame);
+        json.putAll(cList);
+        json.putAll(levels);
         return json;
     }
 }
