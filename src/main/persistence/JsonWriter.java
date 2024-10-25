@@ -2,6 +2,7 @@ package persistence;
 import ui.LevelFrame;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 import java.io.*;
 
 public class JsonWriter {
@@ -44,6 +45,14 @@ public class JsonWriter {
     public void write(Object[][] frame) {
         LevelFrame lf = new LevelFrame(frame);
         JSONArray json = lf.toJson();
+        writer.print(json.toString(3));
+    }
+
+    /* MODIFIES: this
+     * EFFECTS: writes JSON representation of LevelFrame to file once level is complete
+     */
+    public void autoWrite() {
+        JSONObject json = LevelFrame.autoSave();
         writer.print(json.toString(3));
     }
 }
