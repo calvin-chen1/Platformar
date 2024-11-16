@@ -2,6 +2,7 @@ package ui;
 
 import java.util.Scanner;
 
+import model.Collectible;
 import persistence.JsonReader;
 import persistence.JsonWriter;
 
@@ -14,6 +15,7 @@ import java.nio.file.Paths;
 
 public class Main {
     private static LevelFrame game = new LevelFrame();
+    private static GameFrame dGame = new GameFrame();
 
     /*
      * REQUIRES: 2D Object array (frame)
@@ -28,21 +30,49 @@ public class Main {
             jsonWriter.write(f);
             jsonWriter.close();
         } catch (FileNotFoundException e) {
-            System.out.println("Unable to write to file: " + destination);
+            System.out.println("Unable to save");
         }
+    }
+
+    /*
+     * REQUIRES: autosave.json and levelframe.json
+     * EFFECTS: deletes the files for autosave.json and levelframe.json
+     */
+    private static void resetSave() {
+        String fileName1 = "./data/autosave.json";
+        String fileName2 = "./data/levelframe.json";
+        ArrayList<Object[][]> f = LevelFrame.getLevels();
+        ArrayList<Collectible> l = LevelFrame.getClist();
+        f.clear();
+        l.clear();
+        try {
+            Files.delete(Paths.get(fileName1));
+            System.out.println("Successfully deleted the levels save.");
+        } catch (IOException e) {
+            System.out.println("Save not found.");
+        }
+        try {
+            Files.delete(Paths.get(fileName2));
+            System.out.println("Successfully deleted the previous level save.");
+        } catch (IOException e) {
+            System.out.println("No previous level found.");
+        }
+        menu();
     }
 
     /* MODIFIES: this
      * EFFECTS: loads LevelFrame from file
      */
-    private static void loadLevel() {
+    private static void loadPreviousLevel() {
         String source = "./data/levelframe.json";
         JsonReader jsonReader = new JsonReader(source);
         try {
             game = jsonReader.read();
+            System.out.println("Previous level loaded.");
         } catch (IOException e) {
-            System.out.println("Unable to read from file: " + source);
+            System.out.println("Level does not exist.");
         }
+        menu();
     }
 
     /*
@@ -53,23 +83,25 @@ public class Main {
      */
     public static void levelsMenu() {
         ArrayList<Object[][]> levels = LevelFrame.getLevels();
+        ArrayList<Collectible> collectibles = LevelFrame.getClist();
         Scanner in = new Scanner(System.in);
         System.out.println("Welcome to the levels menu. Here are the current levels:");
-        for (int i = 0; i < levels.size(); i++) {
-            System.out.print("[" + (i + 1) + "] ");
-        }
         int input = 0;
-        System.out.println();
         do {
+            for (int i = 0; i < levels.size(); i++) {
+                System.out.print("[" + (i + 1) + "] ");
+            }
+            System.out.println();
             try {
                 System.out.println("Select which one you would like to try.");
                 input = in.nextInt();
             } catch (InputMismatchException e) {
                 in.nextLine();
+                System.out.println("Invalid input. Please choose a number that is listed.");
             }
-            System.out.println("Invalid input. Please choose a number that is listed.");
         } while (input < 1 || input > levels.size());
-        LevelFrame game = new LevelFrame(levels.get(input - 1));
+        Collectible c = collectibles.get(input - 1);
+        LevelFrame game = new LevelFrame(levels.get(input - 1), c, c.getX1());
         game.start();
         in.close();
     }
@@ -82,17 +114,18 @@ public class Main {
         JsonReader jsonReader = new JsonReader("./data/autosave.json");
         Scanner in = new Scanner(System.in);
         System.out.println("-------------------------------------------------------");
-        System.out.println("Welcome to Platformar! Choose your options (Enter 1-5):");
+        System.out.println("Welcome to Platformar! Choose your options (Enter 1-6):");
         System.out.println("\t[1] Start a level");
         System.out.println("\t[2] View levels");
         System.out.println("\t[3] View collectibles");
         System.out.println("\t[4] Load previous level");
         System.out.println("\t[5] Reset your save");
+        System.out.println("\t[6] Quit");
         System.out.println("-------------------------------------------------------");
         try {
             jsonReader.autoRead();
         } catch (IOException e) {
-            System.err.println("Unable to load autosave.");
+            System.out.print("");
         }
         menuScanner(in);
     }
@@ -108,26 +141,9 @@ public class Main {
                 i = in.nextInt();
                 menuInput(i);
             } catch (InputMismatchException e) {
-                System.out.println("Invalid input. Please try again (1-5).");
                 in.nextLine();
             }
         } while (i < 1 || i > 5);
-    }
-
-    /*
-     * REQUIRES: autosave.json and levelframe.json
-     * EFFECTS: deletes the files for autosave.json and levelframe.json
-     */
-    private static void resetSave() {
-        String fileName1 = "./data/autosave.json";
-        String fileName2 = "./data/levelframe.json";
-        try {
-            Files.delete(Paths.get(fileName1));
-            Files.delete(Paths.get(fileName2));
-            System.out.println("Sucessfully deleted saves.");
-        } catch (IOException e) {
-            System.out.println("Save files not found.");
-        }
     }
 
     /*
@@ -146,19 +162,33 @@ public class Main {
                 game.viewCollectibles();
                 break;
             case 4:
-                loadLevel();
-                System.out.println("Loaded level.");
-                menu();
+                LevelFrame.clearScreen();
+                loadPreviousLevel();
                 break;
             case 5:
+                LevelFrame.clearScreen();
                 resetSave();
                 break;
-            default:
-                System.out.println("Invalid input. Please try again (1-5).");
+            case 6: 
+                System.out.println("Thanks for playing!");
+                System.exit(0);
+                break;
         }
     }
 
-    public static void main(String[] args) throws Exception {
-        menu();
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        System.out.println("Graphical or console display? (1 or 2)");
+        int input = 0;
+        do {
+            input = in.nextInt();
+            if (input == 1) {
+                dGame.initialize();
+            } else if (input == 2) {
+                menu();
+                break;
+            }
+        } while (input != 1);
+        in.close();
     }
 }
