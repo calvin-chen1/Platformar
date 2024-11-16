@@ -3,6 +3,7 @@ package ui;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Arrays;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -73,6 +74,18 @@ public class LevelFrame {
         makePath(rand, rand);
     }
 
+    public LevelFrame(Object[][] frame, Collectible c, int prevRand) {
+        cube = new Cube(1, 2);
+        clist = new ArrayList<>();
+        levels = new ArrayList<>();
+        rand = prevRand;
+        collectible = c;
+        this.frame = frame;
+        frame[1][2] = cube;
+        frame[rand][rand] = collectible;
+        makePath(rand, rand);
+    }
+
     public Object[][] getFrame() {
         return this.frame;
     }
@@ -116,32 +129,14 @@ public class LevelFrame {
     }
 
     private void pathLong(int distX, int distY) {
-        double pathChoose = Math.random();
-        if (pathChoose < 0.50) {
-            lpath(distX, distY);
-        } else {
-            for (int j = 2; j < distX; j++) {
-                if (frame[j][2] != null) {
-                    frame[j][2] = null;
-                }
-            }
-            for (int i = 3; i < distY; i++) {
-                if (frame[distX][i] != null) {
-                    frame[distX][i] = null;
-                }
-            }
-        }
-    }
-
-    private void lpath(int distX, int distY) {
-        for (int i = 3; i < distY; i++) {
-            if (frame[1][i] != null) {
-                frame[1][i] = null;
-            }
-        }
         for (int j = 2; j < distX; j++) {
-            if (frame[j][distY] != null) {
-                frame[j][distY] = null;
+            if (frame[j][2] != null) {
+                frame[j][2] = null;
+            }
+        }
+        for (int i = 3; i < distY; i++) {
+            if (frame[distX][i] != null) {
+                frame[distX][i] = null;
             }
         }
     }
@@ -153,7 +148,6 @@ public class LevelFrame {
      * to a block
      */
     public void draw() {
-        frame[rand][rand] = collectible;
         System.out.println();
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -211,7 +205,6 @@ public class LevelFrame {
      * complete
      */
     public void start() {
-        JsonWriter writer = new JsonWriter("./data/autosave.json");
         Scanner in = new Scanner(System.in);
         System.out.println("[=] is lava. {:} is you. (~) is your goal.");
         draw();
@@ -221,17 +214,46 @@ public class LevelFrame {
             String input = in.next();
             move(input);
         }
-        in.close();
         frame[1][2] = cube;
+        frame[rand][rand] = collectible;
+        savePrompt(in);
+        in.close();
+    }
+
+    private void saveLevel() {
+        JsonWriter writer = new JsonWriter("./data/autosave.json");
         levels.add(frame);
         try {
             writer.open();
             writer.autoWrite();
-            System.out.println("Congratulations on finishing! Your level and collectible has been saved.");
+            System.out.println("Your level and collectible has been saved.");
             writer.close();
         } catch (FileNotFoundException e) {
             System.out.println("Unable to write to file");
         }
+    }
+
+    private void savePrompt(Scanner in) {
+        String input = null;
+        if (!containsLevelInSave()) {
+            System.out.println("Congratulations on finishing! Would you like to save your data? (y/n)");
+            do {
+                input = in.next().toLowerCase();
+                if (input.equals("y")) {
+                    saveLevel();
+                    break;
+                }
+            } while (!input.equals("n"));
+        }
+    }
+
+    private boolean containsLevelInSave() {
+        for (Object[][] f : levels) {
+            if (Arrays.deepEquals(f, frame)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /*
