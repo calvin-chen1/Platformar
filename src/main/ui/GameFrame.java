@@ -2,6 +2,8 @@ package ui;
 
 import java.awt.*;
 import javax.swing.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import model.Collectible;
 import model.Cube;
@@ -10,13 +12,35 @@ import model.Platform;
 // constructs a graphical version of the LevelFrame
 public class GameFrame {
     private static LevelFrame gameFrame; // uses a LevelFrame to help with creating the actual frame
+    private Object[][] f;
+    private JLabel[][] labels;
+    private JFrame gFrame;
+    private Cube cube;
+    private Collectible collectible;
 
     /*
      * REQUIRES: LevelFrame
-     * EFFECTS: constructs gameFrame
+     * EFFECTS: constructs gameFrame and borrows elements from LevelFrame
      */
     public GameFrame() {
         gameFrame = new LevelFrame();
+        f = gameFrame.getFrame();
+        gFrame = new JFrame("Platfomar");
+        labels = new JLabel[8][8];
+        for (int i = 0; i < f.length; i++) {
+            for (int j = 0; j < f[i].length; j++) {
+                labels[i][j] = labelObject(f[i][j]);
+                if (f[i][j] instanceof Cube) {
+                    this.cube = (Cube) f[i][j];
+                } else if (f[i][j] instanceof Collectible) {
+                    this.collectible = (Collectible) f[i][j];
+                }
+            }
+        }
+    }
+
+    public JFrame getFrame() {
+        return this.gFrame;
     }
 
     /*
@@ -24,20 +48,18 @@ public class GameFrame {
      * EFFECTS: intializes the graphical window display for the frame
      */
     public void initialize() {
-        JFrame gFrame = new JFrame("Platfomar");
-        Object[][] f = gameFrame.getFrame();
-        gFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        gFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         gFrame.setPreferredSize(new Dimension(800, 800));
         gFrame.setLayout(new GridLayout(f.length, f[0].length));
-        gFrame.setLocationRelativeTo(null);
-
-        for (int i = 0; i < f.length; i++) {
-            for (int j = 0; j < f[0].length; j++) {
-                JLabel label = labelObject(f[i][j]);
-                gFrame.add(label);
+        gFrame.addKeyListener(new KeyHandler());
+        gFrame.setResizable(false);
+        for (int i = 0; i < labels.length; i++) {
+            for (int j = 0; j < labels[0].length; j++) {
+                gFrame.add(labels[i][j]);
             }
         }
         gFrame.pack();
+        gFrame.setLocationRelativeTo(null);
         gFrame.setVisible(true);
     }
 
@@ -74,5 +96,53 @@ public class GameFrame {
         } else {
             l.setBackground(Color.RED);
         }
+    }
+
+    /*
+     * A key handler to respond to key events
+     */
+    private class KeyHandler extends KeyAdapter {
+        @Override
+        public void keyPressed(KeyEvent e) {
+            int keyCode = e.getKeyCode();
+            JLabel c = labels[cube.getX1()][cube.getY1()];
+            if (keyCode == KeyEvent.VK_W)
+                gameFrame.moveUp();
+            else if (keyCode == KeyEvent.VK_D)
+                gameFrame.moveRight();
+            else if (keyCode == KeyEvent.VK_S)
+                gameFrame.moveDown();
+            else if (keyCode == KeyEvent.VK_A)
+                gameFrame.moveLeft();
+            updateBoard(c);
+        }
+    }
+
+    private void updateBoard(Component initialLabel) {
+        JLabel updatedLabel = labels[cube.getX1()][cube.getY1()];
+        initialLabel.setBackground(Color.WHITE);
+        updatedLabel.setBackground(Color.BLUE);
+        collectible.collect(cube);
+        if (collectible.getIsCollected()) {
+            win();
+        }
+        initialLabel.revalidate();
+        initialLabel.repaint();
+        updatedLabel.revalidate();
+        updatedLabel.repaint();
+    }
+
+    private void win() {
+        JOptionPane.showMessageDialog(gFrame, "You won!");
+        int n = JOptionPane.showConfirmDialog(gFrame,
+                "Would you like to replay?", "", JOptionPane.YES_NO_OPTION);
+
+        if (n == JOptionPane.YES_OPTION) {
+            Main.restart = true;
+        } else {
+            JOptionPane.showMessageDialog(gFrame, "Thanks for playing!");
+            Main.restart = false;
+        }
+        gFrame.setVisible(false);
     }
 }
