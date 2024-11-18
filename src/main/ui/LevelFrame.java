@@ -217,6 +217,7 @@ public class LevelFrame {
         frame[1][2] = cube;
         frame[rand][rand] = collectible;
         savePrompt(in);
+        replayPrompt(in);
         in.close();
     }
 
@@ -256,6 +257,20 @@ public class LevelFrame {
         return false;
     }
 
+    private void replayPrompt(Scanner in) {
+        System.out.println("Do you want to replay? (y/n)");
+        String input = in.next().toLowerCase();
+        do {
+            if (input.equals("y")) {
+                Main.restart = true;
+                break;
+            } else if (input.equals("n")) {
+                Main.restart = false;
+            }
+     
+        } while (!input.equals("n"));
+    }
+
     /*
      * REQUIRES: in >= 0
      * EFFECTS: used to decrease the amount of lines that the movement functions
@@ -265,15 +280,19 @@ public class LevelFrame {
         switch (in) {
             case "w":
                 moveUp();
+                draw();
                 break;
             case "d":
                 moveRight();
+                draw();
                 break;
             case "s":
                 moveDown();
+                draw();
                 break;
             case "a":
                 moveLeft();
+                draw();
                 break;
             case "/q":
                 Main.saveLevel(frame);
@@ -294,17 +313,14 @@ public class LevelFrame {
                 frame[cube.getX1() - 1][cube.getY1()] = cube;
                 frame[cube.getX1()][cube.getY1()] = null;
                 cube.moveLeft();
-                draw();
             } else if (frame[cube.getX1() - 1][cube.getY1()].toString().substring(0, 14).equals("model.Platform")) {
                 Platform temp = (Platform) frame[cube.getX1() - 1][cube.getY1()];
                 if (temp.getIsLava()) {
                     frame[cube.getX1()][cube.getY1()] = null;
                     cube.resetPosition();
                     frame[1][2] = cube;
-                    draw();
                     System.out.println("You ran into lava! Your position is reset.");
                 } else {
-                    draw();
                     System.out.println("Invalid action, please try 'a', 'w', or 'd'");
                 }
             }
@@ -323,17 +339,14 @@ public class LevelFrame {
                 frame[cube.getX1()][cube.getY1() + 1] = cube;
                 frame[cube.getX1()][cube.getY1()] = null;
                 cube.jump();
-                draw();
             } else if (frame[cube.getX1()][cube.getY1() + 1].toString().substring(0, 14).equals("model.Platform")) {
                 Platform temp = (Platform) frame[cube.getX1()][cube.getY1() + 1];
                 if (temp.getIsLava()) {
                     frame[cube.getX1()][cube.getY1()] = null;
                     cube.resetPosition();
                     frame[1][2] = cube;
-                    draw();
                     System.out.println("You ran into lava! Your position is reset.");
                 } else {
-                    draw();
                     System.out.println("Invalid action, please try 'a', 'w', or 'd'");
                 }
             }
@@ -352,17 +365,14 @@ public class LevelFrame {
                 frame[cube.getX1() + 1][cube.getY1()] = cube;
                 frame[cube.getX1()][cube.getY1()] = null;
                 cube.moveRight();
-                draw();
             } else if (frame[cube.getX1() + 1][cube.getY1()].toString().substring(0, 14).equals("model.Platform")) {
                 Platform temp = (Platform) frame[cube.getX1() + 1][cube.getY1()];
                 if (temp.getIsLava()) {
                     frame[cube.getX1()][cube.getY1()] = null;
                     cube.resetPosition();
                     frame[1][2] = cube;
-                    draw();
                     System.out.println("You ran into lava! Your position is reset.");
                 } else {
-                    draw();
                     System.out.println("Invalid action, please try 'a', 'w', or 'd'");
                 }
             }
@@ -381,17 +391,14 @@ public class LevelFrame {
                 frame[cube.getX1()][cube.getY1() - 1] = cube;
                 frame[cube.getX1()][cube.getY1()] = null;
                 cube.fall();
-                draw();
             } else if (frame[cube.getX1()][cube.getY1() - 1].toString().substring(0, 14).equals("model.Platform")) {
                 Platform temp = (Platform) frame[cube.getX1()][cube.getY1() - 1];
                 if (temp.getIsLava()) {
                     frame[cube.getX1()][cube.getY1()] = null;
                     cube.resetPosition();
                     frame[1][2] = cube;
-                    draw();
                     System.out.println("You ran into lava! Your position is reset.");
                 } else {
-                    draw();
                     System.out.println("Invalid action, please try 'a', 'w', or 'd'");
                 }
             }

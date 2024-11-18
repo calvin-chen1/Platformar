@@ -2,20 +2,25 @@ package ui;
 
 import java.util.Scanner;
 
+import javax.swing.JFrame;
+
 import model.Collectible;
 import persistence.JsonReader;
 import persistence.JsonWriter;
 
 import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class Main {
-    private static LevelFrame game = new LevelFrame();
-    private static GameFrame dGame = new GameFrame();
+    private static LevelFrame game;
+    private static GameFrame dGame;
+    protected static boolean restart;
 
     /*
      * REQUIRES: 2D Object array (frame)
@@ -60,7 +65,8 @@ public class Main {
         menu();
     }
 
-    /* MODIFIES: this
+    /*
+     * MODIFIES: this
      * EFFECTS: loads LevelFrame from file
      */
     private static void loadPreviousLevel() {
@@ -130,9 +136,10 @@ public class Main {
         menuScanner(in);
     }
 
-     /*
+    /*
      * REQUIRES: input from user
-     * EFFECTS: takes in input for the menu; invalid inputs if beyond 5 or less than 1
+     * EFFECTS: takes in input for the menu; invalid inputs if beyond 5 or less than
+     * 1
      */
     private static void menuScanner(Scanner in) {
         int i = 0;
@@ -148,7 +155,8 @@ public class Main {
 
     /*
      * REQUIRES: input from user
-     * EFFECTS: takes in input for the menu; invalid inputs if beyond 5 or less than 1
+     * EFFECTS: takes in input for the menu; invalid inputs if beyond 5 or less than
+     * 1
      */
     private static void menuInput(int i) {
         switch (i) {
@@ -169,26 +177,62 @@ public class Main {
                 LevelFrame.clearScreen();
                 resetSave();
                 break;
-            case 6: 
+            case 6:
                 System.out.println("Thanks for playing!");
                 System.exit(0);
                 break;
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         Scanner in = new Scanner(System.in);
         System.out.println("Graphical or console display? (1 or 2)");
         int input = 0;
-        do {
-            input = in.nextInt();
-            if (input == 1) {
+        input = in.nextInt();
+        if (input == 1) {
+            do {
+                dGame = new GameFrame();
                 dGame.initialize();
-            } else if (input == 2) {
-                menu();
-                break;
-            }
-        } while (input != 1);
+                // JFrame frame = dGame.getFrame();
+                
+            } while (restart);
+        } else if (input == 2) {
+            consoleRun();
+        }
         in.close();
     }
+
+    private static void consoleRun() {
+        do {
+            game = new LevelFrame();
+            menu();
+        } while(restart);
+    }
 }
+// Thread t = new Thread() {
+//     public void run() {
+//         synchronized(dGame) {
+//             while (frame.isVisible())
+//                 try {
+//                     dGame.wait();
+//                 } catch (InterruptedException e) {
+//                     e.printStackTrace();
+//                 }
+//             System.out.println("Working now");
+//         }
+//     }
+// };
+// t.start();
+
+// frame.addWindowListener(new WindowAdapter() {
+//     @Override
+//     public void windowClosing(WindowEvent arg0) {
+//         synchronized (dGame) {
+//             frame.dispose();
+//             dGame.notify();
+//         }
+//     }
+
+// });
+
+// t.join();
