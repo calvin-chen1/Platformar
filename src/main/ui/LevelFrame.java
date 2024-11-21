@@ -314,7 +314,7 @@ public class LevelFrame {
                 frame[cube.getX1()][cube.getY1()] = null;
                 cube.moveLeft();
             } else if (frame[cube.getX1() - 1][cube.getY1()].toString().substring(0, 14).equals("model.Platform")) {
-                determinePlatform((Platform) frame[cube.getX1() - 1][cube.getY1()]);
+                determinePlatform((Platform) frame[cube.getX1() - 1][cube.getY1()], 1);
             }
         } else {
             System.out.println("Invalid action, please try 'a', 's', or 'd'");
@@ -334,10 +334,10 @@ public class LevelFrame {
                 frame[cube.getX1()][cube.getY1()] = null;
                 cube.jump();
             } else if (frame[cube.getX1()][cube.getY1() + 1].toString().substring(0, 14).equals("model.Platform")) {
-                determinePlatform((Platform) frame[cube.getX1()][cube.getY1() + 1]);
+                determinePlatform((Platform) frame[cube.getX1()][cube.getY1() + 1], 2);
             }
         } else {
-            System.out.println("Invalid action, please try 'a', 'w', or 's'");
+            System.out.println("Invalid action, please try 'w', 's', or 'd'");
         }
     }
 
@@ -354,7 +354,7 @@ public class LevelFrame {
                 frame[cube.getX1()][cube.getY1()] = null;
                 cube.moveRight();
             } else if (frame[cube.getX1() + 1][cube.getY1()].toString().substring(0, 14).equals("model.Platform")) {
-                determinePlatform((Platform) frame[cube.getX1() + 1][cube.getY1()]);
+                determinePlatform((Platform) frame[cube.getX1() + 1][cube.getY1()], 3);
             }
         } else {
             System.out.println("Invalid action, please try 'a', 'w', or 'd'");
@@ -374,21 +374,47 @@ public class LevelFrame {
                 frame[cube.getX1()][cube.getY1()] = null;
                 cube.fall();
             } else if (frame[cube.getX1()][cube.getY1() - 1].toString().substring(0, 14).equals("model.Platform")) {
-                determinePlatform((Platform) frame[cube.getX1()][cube.getY1() - 1]);
+                determinePlatform((Platform) frame[cube.getX1()][cube.getY1() - 1], 4);
             }
         } else {
-            System.out.println("Invalid action, please try 'a', 'w', or 'd'");
+            System.out.println("Invalid action, please try 'a', 'w', or 's'");
         }
     }
 
-    private void determinePlatform(Platform p) {
+    /*
+     * REQUIRES: p, direction
+     * EFFECTS: determines the type of platform and prints the corresponding message
+     * and determines direction by representing directions in numbers 1 to 4 as north to west
+     */
+    private void determinePlatform(Platform p, int direction) {
         if (p.getIsLava()) {
             frame[cube.getX1()][cube.getY1()] = null;
             cube.resetPosition();
             frame[1][2] = cube;
             System.out.println("You ran into lava! Your position is reset.");
         } else {
-            System.out.println("Invalid action, please try 'a', 'w', or 'd'");
+            printDirection(direction);
+        }
+    }
+    
+    /*
+     * REQUIRES: direction
+     * EFFECTS: prints the direction where the action is invalid
+     */
+    private void printDirection(int direction) {
+        switch(direction) {
+            case 1:
+                System.out.println("Invalid action, please try 'a', 's', or 'd'");
+                break;
+            case 2:
+                System.out.println("Invalid action, please try 'w', 's', or 'd'");
+                break;
+            case 3:
+                System.out.println("Invalid action, please try 'a', 'w', or 'd'");
+                break;
+            case 4:
+                System.out.println("Invalid action, please try 'a', 'w', or 's'");            
+                break;
         }
     }
 
