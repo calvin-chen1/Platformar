@@ -16,18 +16,21 @@ import model.Collectible;
 import model.Cube;
 import model.Platform;
 
+// creates the grid layout for GameFrame
 public class GridPanel extends JPanel {
-    private static LevelFrame gFrame; // uses a LevelFrame to help with creating the actual frame
-    private GameFrame gameFrame;
-    private JLabel[][] labels;
-    private Object[][] f;
-    private LegendPanel lPanel;
-    private Cube cube;
-    private Collectible collectible;
+    private LevelFrame gFrame; // uses a LevelFrame to match its layout for the grid
+    private GameFrame gameFrame; // uses gameFrame to notify the window listener
+    private JLabel[][] labels; // puts all the labels into a list to help with modifying cube positions
+    private LegendPanel lPanel; // uses lPanel to update text when keyPressed is called
+    private Cube cube; // to get the position of the cube
+    private Collectible collectible; // used for checks if it has been collected
 
+    /*
+     * MODIFIES: this
+     * EFFECTS: implements all variables and initializes the grid layout
+     */
     public GridPanel(GameFrame gameFrame, LegendPanel lPanel) {
         gFrame = new LevelFrame();
-        f = gFrame.getFrame();
         labels = new JLabel[8][8];
         this.gameFrame = gameFrame;
         this.lPanel = lPanel;
@@ -35,7 +38,12 @@ public class GridPanel extends JPanel {
         initializeGrid();
     }
 
+    /*
+     * MODIFIES: this
+     * EFFECTS: sets labels and finds the reference for Cube and Collectible
+     */
     private void setLabels() {
+        Object[][] f = gFrame.getFrame();
         for (int i = 0; i < f.length; i++) {
             for (int j = 0; j < f[i].length; j++) {
                 labels[i][j] = labelObject(f[i][j]);
@@ -48,10 +56,12 @@ public class GridPanel extends JPanel {
         }
     }
 
+    /*
+     * EFFECTS: sets up the graphical image for GameFrame
+     */
     private void initializeGrid() {
         setPreferredSize(new Dimension(600, 600));
-        // addKeyListener(new KeyHandler());
-        setLayout(new GridLayout(f.length, f[0].length));
+        setLayout(new GridLayout(8, 8));
         for (int i = 0; i < labels.length; i++) {
             for (int j = 0; j < labels[0].length; j++) {
                 add(labels[i][j]);
