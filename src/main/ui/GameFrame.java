@@ -4,6 +4,7 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
 
 import model.Collectible;
 import model.Cube;
@@ -27,6 +28,14 @@ public class GameFrame {
         f = gameFrame.getFrame();
         gFrame = new JFrame("Platfomar");
         labels = new JLabel[8][8];
+        setLabels();
+    }
+
+    public JFrame getFrame() {
+        return this.gFrame;
+    }
+
+    private void setLabels() {
         for (int i = 0; i < f.length; i++) {
             for (int j = 0; j < f[i].length; j++) {
                 labels[i][j] = labelObject(f[i][j]);
@@ -37,10 +46,6 @@ public class GameFrame {
                 }
             }
         }
-    }
-
-    public JFrame getFrame() {
-        return this.gFrame;
     }
 
     /*
@@ -143,6 +148,7 @@ public class GameFrame {
             JOptionPane.showMessageDialog(gFrame, "Thanks for playing!");
             Main.restart = false;
         }
-        gFrame.setVisible(false);
+        gFrame.dispatchEvent(new WindowEvent(gFrame, WindowEvent.WINDOW_CLOSED));
+
     }
 }

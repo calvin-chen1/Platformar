@@ -21,6 +21,8 @@ public class LevelFrame {
     private int rand; // random number
     private static ArrayList<Collectible> clist = new ArrayList<>(); // list of collected collectibles
     private static ArrayList<Object[][]> levels = new ArrayList<>(); // list of levels finished or randomly added
+    
+    private static Scanner in = Main.in;
 
     /*
      * REQUIRES: Indexes within the bounds of the 2D array
@@ -205,7 +207,6 @@ public class LevelFrame {
      * complete
      */
     public void start() {
-        Scanner in = new Scanner(System.in);
         System.out.println("[=] is lava. {:} is you. (~) is your goal.");
         draw();
         System.out
@@ -218,7 +219,6 @@ public class LevelFrame {
         frame[rand][rand] = collectible;
         savePrompt(in);
         replayPrompt(in);
-        in.close();
     }
 
     private void saveLevel() {

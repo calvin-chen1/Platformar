@@ -1,6 +1,6 @@
 package ui;
 
-import java.util.Scanner;
+
 
 import javax.swing.JFrame;
 
@@ -8,16 +8,21 @@ import model.Collectible;
 import persistence.JsonReader;
 import persistence.JsonWriter;
 
+import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class Main {
+    protected static Scanner in;
+
     private static LevelFrame game;
     private static GameFrame dGame;
     protected static boolean restart;
@@ -90,7 +95,6 @@ public class Main {
     public static void levelsMenu() {
         ArrayList<Object[][]> levels = LevelFrame.getLevels();
         ArrayList<Collectible> collectibles = LevelFrame.getClist();
-        Scanner in = new Scanner(System.in);
         System.out.println("Welcome to the levels menu. Here are the current levels:");
         int input = 0;
         do {
@@ -109,7 +113,6 @@ public class Main {
         Collectible c = collectibles.get(input - 1);
         LevelFrame game = new LevelFrame(levels.get(input - 1), c, c.getX1());
         game.start();
-        in.close();
     }
 
     /*
@@ -118,7 +121,6 @@ public class Main {
      */
     public static void menu() {
         JsonReader jsonReader = new JsonReader("./data/autosave.json");
-        Scanner in = new Scanner(System.in);
         System.out.println("-------------------------------------------------------");
         System.out.println("Welcome to Platformar! Choose your options (Enter 1-6):");
         System.out.println("\t[1] Start a level");
@@ -133,7 +135,7 @@ public class Main {
         } catch (IOException e) {
             System.out.print("");
         }
-        menuScanner(in);
+        menuScanner();
     }
 
     /*
@@ -141,7 +143,7 @@ public class Main {
      * EFFECTS: takes in input for the menu; invalid inputs if beyond 5 or less than
      * 1
      */
-    private static void menuScanner(Scanner in) {
+    private static void menuScanner() {
         int i = 0;
         do {
             try {
@@ -185,7 +187,7 @@ public class Main {
     }
 
     public static void main(String[] args) throws Exception {
-        Scanner in = new Scanner(System.in);
+        in = new Scanner(System.in);
         System.out.println("Graphical or console display? (1 or 2)");
         int input = 0;
         input = in.nextInt();
@@ -193,8 +195,7 @@ public class Main {
             do {
                 dGame = new GameFrame();
                 dGame.initialize();
-                // JFrame frame = dGame.getFrame();
-                
+                waitForFrame();
             } while (restart);
         } else if (input == 2) {
             consoleRun();
@@ -206,33 +207,43 @@ public class Main {
         do {
             game = new LevelFrame();
             menu();
-        } while(restart);
+        } while (restart);
+    }
+
+    private static void waitForFrame() {
+        JFrame frame = dGame.getFrame();
+        Thread t = new Thread() {
+            public void run() {
+                synchronized (dGame) {
+                    while (frame.isVisible()) {
+                        try {
+                            dGame.wait();
+                        } catch (InterruptedException e) {
+                            System.err.println("Unexcepted interruption");
+                        }
+                    }
+                }
+            }
+        };
+        t.start();
+        addWindowListener(t, frame);
+    }
+
+    private static void addWindowListener(Thread t, JFrame frame) {
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent arg0) {
+                synchronized (dGame) {
+                    frame.setVisible(false);
+                    frame.dispose();
+                    dGame.notify();
+                }
+            }
+        });
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            System.err.println("Unexcepted interruption");
+        }
     }
 }
-// Thread t = new Thread() {
-//     public void run() {
-//         synchronized(dGame) {
-//             while (frame.isVisible())
-//                 try {
-//                     dGame.wait();
-//                 } catch (InterruptedException e) {
-//                     e.printStackTrace();
-//                 }
-//             System.out.println("Working now");
-//         }
-//     }
-// };
-// t.start();
-
-// frame.addWindowListener(new WindowAdapter() {
-//     @Override
-//     public void windowClosing(WindowEvent arg0) {
-//         synchronized (dGame) {
-//             frame.dispose();
-//             dGame.notify();
-//         }
-//     }
-
-// });
-
-// t.join();
