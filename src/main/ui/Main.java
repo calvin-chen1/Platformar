@@ -32,7 +32,7 @@ public class Main {
      * MODIFIES: this
      * EFFECTS: adds a 2D frame to levels
      */
-    public static void saveLevel(Object[][] f) {
+    public static void savePreviousLevel(Object[][] f) {
         String destination = "./data/levelframe.json";
         JsonWriter jsonWriter = new JsonWriter(destination);
         try {
@@ -211,7 +211,7 @@ public class Main {
     }
 
     private static void waitForFrame() {
-        JFrame frame = dGame.getFrame();
+        JFrame frame = dGame;
         Thread t = new Thread() {
             public void run() {
                 synchronized (dGame) {
