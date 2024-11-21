@@ -34,21 +34,6 @@ public class JsonReader {
         return new LevelFrame(parseLevelFrame(jsonArray));
     }
 
-    /* REQUIRES: HashMap, and indexes for frame
-     * EFFECTS: sets objects with info obtained from the hashmaps
-     */
-    private void attributeObject(Object h, int i, int j, Object[][] frame) {
-        if (h.toString().charAt(13) == 'i') {
-            frame[i][j] = new Collectible(i, j);
-        } else if (h.toString().charAt(0) == 's') {
-            frame[i][j] = new Cube(i, j);
-        } else if (h.toString().charAt(30) == 'f') {
-            frame[i][j] = new Platform(i, j, 50, 50, false);
-        } else {
-            frame[i][j] = new Platform(i, j, 50, 50, true);
-        }
-    }
-
     /* REQUIRES: autosave.json
      * EFFECTS: on application run, read the autosave.json file and store in clist and
      * levels
@@ -83,6 +68,7 @@ public class JsonReader {
     /* REQUIRES: jsonArray
      * EFFECTS: goes through jsonArray and sets corresponding values to return as an Object[][]
      */
+    @SuppressWarnings("unchecked")
     private Object[][] parseLevels(JSONArray jsonArray) {
         Object[][] frame = new Object[8][8];
         List<Object> jsonList = jsonArray.toList();
@@ -90,7 +76,7 @@ public class JsonReader {
             List<Object> arrList = (ArrayList<Object>) jsonList.get(i);
             for (int j = 0; j < arrList.size(); j++) {
                 if (arrList.get(j) instanceof HashMap) {
-                    attributeObject(arrList.get(j), i, j, frame);
+                    attributeObject((HashMap<String, Object>) arrList.get(j), i, j, frame);
                 } else {
                     frame[i][j] = null;
                 }
@@ -102,6 +88,7 @@ public class JsonReader {
     /* REQUIRES: jsonArray
      * EFFECTS: goes through jsonArray and sets corresponding values to return as an Object[][]
      */
+    @SuppressWarnings("unchecked")
     private Object[][] parseLevelFrame(JSONArray jsonArray) {
         Object[][] frame = new Object[8][8];
         List<Object> jsonList = jsonArray.toList();
@@ -110,13 +97,27 @@ public class JsonReader {
             List<Object> arrList = (ArrayList<Object>) arrLists.get(i);
             for (int j = 0; j < arrList.size(); j++) {
                 if (arrList.get(j) instanceof HashMap) {
-                    attributeObject(arrList.get(j), i, j, frame);
+                    attributeObject((HashMap<String, Object>) arrList.get(j), i, j, frame);
                 } else {
                     frame[i][j] = null;
                 }
             }
         }
         return frame;
+    }
+
+    /* REQUIRES: HashMap, and indexes for frame
+     * EFFECTS: sets objects with info obtained from the hashmaps
+     */
+    private void attributeObject(HashMap<String, Object> h, int i, int j, Object[][] frame) {
+        if (h.toString().charAt(13) == 'i') {
+            frame[i][j] = new Collectible(i, j);
+        } else if (h.containsKey("speedX")) {
+            frame[i][j] = new Cube(i, j);
+        } else if (h.containsKey("isLava")) {
+            boolean isLava = (boolean) h.get("isLava");
+            frame[i][j] = new Platform(i, j, 50, 50, isLava);
+        } 
     }
 
     /* 
