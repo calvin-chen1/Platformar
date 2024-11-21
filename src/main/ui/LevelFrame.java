@@ -21,7 +21,7 @@ public class LevelFrame {
     private int rand; // random number
     private static ArrayList<Collectible> clist = new ArrayList<>(); // list of collected collectibles
     private static ArrayList<Object[][]> levels = new ArrayList<>(); // list of levels finished or randomly added
-    
+
     private static Scanner in = Main.in;
 
     /*
@@ -132,12 +132,12 @@ public class LevelFrame {
 
     private void pathLong(int distX, int distY) {
         for (int j = 2; j < distX; j++) {
-            if (frame[j][2] != null) {
+            if (!(frame[j][2] == null)) {
                 frame[j][2] = null;
             }
         }
         for (int i = 3; i < distY; i++) {
-            if (frame[distX][i] != null) {
+            if (!(frame[distX][i] == null)) {
                 frame[distX][i] = null;
             }
         }
@@ -267,7 +267,7 @@ public class LevelFrame {
             } else if (input.equals("n")) {
                 Main.restart = false;
             }
-     
+
         } while (!input.equals("n"));
     }
 
@@ -295,7 +295,7 @@ public class LevelFrame {
                 draw();
                 break;
             case "/q":
-                Main.saveLevel(frame);
+                Main.savePreviousLevel(frame);
                 System.exit(0);
                 break;
         }
@@ -306,24 +306,18 @@ public class LevelFrame {
      * EFFECTS: moves the cube up if there is no platform
      */
     public void moveUp() {
+        clearScreen();
         if (cube.getX1() - 1 >= 0) {
-            clearScreen();
             if (frame[cube.getX1() - 1][cube.getY1()] == null
                     || (frame[cube.getX1() - 1][cube.getY1()] instanceof Collectible)) {
                 frame[cube.getX1() - 1][cube.getY1()] = cube;
                 frame[cube.getX1()][cube.getY1()] = null;
                 cube.moveLeft();
             } else if (frame[cube.getX1() - 1][cube.getY1()].toString().substring(0, 14).equals("model.Platform")) {
-                Platform temp = (Platform) frame[cube.getX1() - 1][cube.getY1()];
-                if (temp.getIsLava()) {
-                    frame[cube.getX1()][cube.getY1()] = null;
-                    cube.resetPosition();
-                    frame[1][2] = cube;
-                    System.out.println("You ran into lava! Your position is reset.");
-                } else {
-                    System.out.println("Invalid action, please try 'a', 'w', or 'd'");
-                }
+                determinePlatform((Platform) frame[cube.getX1() - 1][cube.getY1()]);
             }
+        } else {
+            System.out.println("Invalid action, please try 'a', 's', or 'd'");
         }
     }
 
@@ -332,24 +326,18 @@ public class LevelFrame {
      * EFFECTS: moves the cube right if there is no platform
      */
     public void moveRight() {
+        clearScreen();
         if (cube.getY1() + 1 < frame[0].length) {
-            clearScreen();
             if (frame[cube.getX1()][cube.getY1() + 1] == null
                     || (frame[cube.getX1()][cube.getY1() + 1] instanceof Collectible)) {
                 frame[cube.getX1()][cube.getY1() + 1] = cube;
                 frame[cube.getX1()][cube.getY1()] = null;
                 cube.jump();
             } else if (frame[cube.getX1()][cube.getY1() + 1].toString().substring(0, 14).equals("model.Platform")) {
-                Platform temp = (Platform) frame[cube.getX1()][cube.getY1() + 1];
-                if (temp.getIsLava()) {
-                    frame[cube.getX1()][cube.getY1()] = null;
-                    cube.resetPosition();
-                    frame[1][2] = cube;
-                    System.out.println("You ran into lava! Your position is reset.");
-                } else {
-                    System.out.println("Invalid action, please try 'a', 'w', or 'd'");
-                }
+                determinePlatform((Platform) frame[cube.getX1()][cube.getY1() + 1]);
             }
+        } else {
+            System.out.println("Invalid action, please try 'a', 'w', or 's'");
         }
     }
 
@@ -358,24 +346,18 @@ public class LevelFrame {
      * EFFECTS: moves the cube down if there is no platform
      */
     public void moveDown() {
+        clearScreen();
         if (cube.getX1() + 1 < frame.length) {
-            clearScreen();
             if (frame[cube.getX1() + 1][cube.getY1()] == null
                     || (frame[cube.getX1() + 1][cube.getY1()] instanceof Collectible)) {
                 frame[cube.getX1() + 1][cube.getY1()] = cube;
                 frame[cube.getX1()][cube.getY1()] = null;
                 cube.moveRight();
             } else if (frame[cube.getX1() + 1][cube.getY1()].toString().substring(0, 14).equals("model.Platform")) {
-                Platform temp = (Platform) frame[cube.getX1() + 1][cube.getY1()];
-                if (temp.getIsLava()) {
-                    frame[cube.getX1()][cube.getY1()] = null;
-                    cube.resetPosition();
-                    frame[1][2] = cube;
-                    System.out.println("You ran into lava! Your position is reset.");
-                } else {
-                    System.out.println("Invalid action, please try 'a', 'w', or 'd'");
-                }
+                determinePlatform((Platform) frame[cube.getX1() + 1][cube.getY1()]);
             }
+        } else {
+            System.out.println("Invalid action, please try 'a', 'w', or 'd'");
         }
     }
 
@@ -384,24 +366,29 @@ public class LevelFrame {
      * EFFECTS: moves the cube left if there is no platform
      */
     public void moveLeft() {
+        clearScreen();
         if (cube.getY1() - 1 >= 0) {
-            clearScreen();
             if (frame[cube.getX1()][cube.getY1() - 1] == null
                     || (frame[cube.getX1()][cube.getY1() - 1] instanceof Collectible)) {
                 frame[cube.getX1()][cube.getY1() - 1] = cube;
                 frame[cube.getX1()][cube.getY1()] = null;
                 cube.fall();
             } else if (frame[cube.getX1()][cube.getY1() - 1].toString().substring(0, 14).equals("model.Platform")) {
-                Platform temp = (Platform) frame[cube.getX1()][cube.getY1() - 1];
-                if (temp.getIsLava()) {
-                    frame[cube.getX1()][cube.getY1()] = null;
-                    cube.resetPosition();
-                    frame[1][2] = cube;
-                    System.out.println("You ran into lava! Your position is reset.");
-                } else {
-                    System.out.println("Invalid action, please try 'a', 'w', or 'd'");
-                }
+                determinePlatform((Platform) frame[cube.getX1()][cube.getY1() - 1]);
             }
+        } else {
+            System.out.println("Invalid action, please try 'a', 'w', or 'd'");
+        }
+    }
+
+    private void determinePlatform(Platform p) {
+        if (p.getIsLava()) {
+            frame[cube.getX1()][cube.getY1()] = null;
+            cube.resetPosition();
+            frame[1][2] = cube;
+            System.out.println("You ran into lava! Your position is reset.");
+        } else {
+            System.out.println("Invalid action, please try 'a', 'w', or 'd'");
         }
     }
 
