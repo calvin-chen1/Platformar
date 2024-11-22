@@ -18,10 +18,10 @@ import model.Platform;
 
 // creates the grid layout for GameFrame
 public class GridPanel extends JPanel {
-    private LevelFrame gFrame; // uses a LevelFrame to match its layout for the grid
+    private LevelFrame gframe; // uses a LevelFrame to match its layout for the grid
     private GameFrame gameFrame; // uses gameFrame to notify the window listener
     private JLabel[][] labels; // puts all the labels into a list to help with modifying cube positions
-    private LegendPanel lPanel; // uses lPanel to update text when keyPressed is called
+    private LegendPanel lpanel; // uses lPanel to update text when keyPressed is called
     private Cube cube; // to get the position of the cube
     private Collectible collectible; // used for checks if it has been collected
 
@@ -29,11 +29,20 @@ public class GridPanel extends JPanel {
      * MODIFIES: this
      * EFFECTS: implements all variables and initializes the grid layout
      */
-    public GridPanel(GameFrame gameFrame, LegendPanel lPanel) {
-        gFrame = new LevelFrame();
+    public GridPanel(GameFrame gameFrame, LegendPanel lpanel) {
+        gframe = new LevelFrame();
         labels = new JLabel[8][8];
         this.gameFrame = gameFrame;
-        this.lPanel = lPanel;
+        this.lpanel = lpanel;
+        setLabels();
+        initializeGrid();
+    }
+
+    public GridPanel(GameFrame gameFrame, LegendPanel lpanel, LevelFrame frame) {
+        gframe = frame;
+        labels = new JLabel[8][8];
+        this.gameFrame = gameFrame;
+        this.lpanel = lpanel;
         setLabels();
         initializeGrid();
     }
@@ -43,7 +52,7 @@ public class GridPanel extends JPanel {
      * EFFECTS: sets labels and finds the reference for Cube and Collectible
      */
     private void setLabels() {
-        Object[][] f = gFrame.getFrame();
+        Object[][] f = gframe.getFrame();
         for (int i = 0; i < f.length; i++) {
             for (int j = 0; j < f[i].length; j++) {
                 labels[i][j] = labelObject(f[i][j]);
@@ -110,18 +119,19 @@ public class GridPanel extends JPanel {
      * move the cube through the grid layout
      */
     public void keyPressed(int keyCode) {
-        lPanel.redirectConsoleOutput();
+        lpanel.redirectConsoleOutput();
         JLabel c = labels[cube.getX1()][cube.getY1()];
-        if (keyCode == KeyEvent.VK_W)
-            gFrame.moveUp();
-        else if (keyCode == KeyEvent.VK_D)
-            gFrame.moveRight();
-        else if (keyCode == KeyEvent.VK_S)
-            gFrame.moveDown();
-        else if (keyCode == KeyEvent.VK_A)
-            gFrame.moveLeft();
+        if (keyCode == KeyEvent.VK_W) {
+            gframe.moveUp();
+        } else if (keyCode == KeyEvent.VK_D) {
+            gframe.moveRight();
+        } else if (keyCode == KeyEvent.VK_S) {
+            gframe.moveDown();
+        } else if (keyCode == KeyEvent.VK_A) {
+            gframe.moveLeft();
+        }
         updateBoard(c);
-        lPanel.updateMsg();
+        lpanel.updateMsg();
         System.out.flush();
         System.setOut(System.out);
     }
@@ -149,10 +159,15 @@ public class GridPanel extends JPanel {
 
     private void win() {
         JOptionPane.showMessageDialog(this, "You won!");
-        int n = JOptionPane.showConfirmDialog(this,
-                "Would you like to replay?", "", JOptionPane.YES_NO_OPTION);
+        int s = JOptionPane.showConfirmDialog(this,
+                "Would you like to save?", "", JOptionPane.YES_NO_OPTION);
 
-        if (n == JOptionPane.YES_OPTION) {
+        int r = JOptionPane.showConfirmDialog(this,
+                "Would you like to replay?", "", JOptionPane.YES_NO_OPTION);
+        if (s == JOptionPane.YES_OPTION) {
+            gframe.saveLevel();
+        }
+        if (r == JOptionPane.YES_OPTION) {
             Main.restart = true;
         } else {
             JOptionPane.showMessageDialog(this, "Thanks for playing!");

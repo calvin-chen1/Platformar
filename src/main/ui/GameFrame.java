@@ -1,14 +1,20 @@
 package ui;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
+import persistence.JsonReader;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 
 // constructs a graphical version of the LevelFrame
 public class GameFrame extends JFrame {
-    private GridPanel gPanel;
-    private LegendPanel lPanel;
+    private GridPanel gpanel;
+    private LegendPanel lpanel;
+    private StartPanel spanel;
 
     /*
      * REQUIRES: LevelFrame
@@ -16,21 +22,32 @@ public class GameFrame extends JFrame {
      */
     public GameFrame() {
         super("Platformar");
-        lPanel = new LegendPanel();
-        gPanel = new GridPanel(this, lPanel);
+        loadSave();
+        spanel = new StartPanel(this);
+        lpanel = new LegendPanel();
+        gpanel = new GridPanel(this, lpanel);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        add(spanel);
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);
     }
 
+    protected void updateGrid(LevelFrame frame) {
+        gpanel = new GridPanel(this, lpanel, frame);
+        setVisible(false);
+        remove(spanel);
+        initialize();
+    }
 
     /*
-     * REQUIRES: frame must exist
      * EFFECTS: intializes the graphical window display for the frame
      */
-    public void initialize() {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    protected void initialize() {
         addKeyListener(new KeyHandler());
         setResizable(false);
-        add(gPanel);
-        add(lPanel, BorderLayout.NORTH);
+        add(gpanel);
+        add(lpanel, BorderLayout.NORTH);
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
@@ -42,7 +59,32 @@ public class GameFrame extends JFrame {
     private class KeyHandler extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent e) {
-            gPanel.keyPressed(e.getKeyCode());
+            gpanel.keyPressed(e.getKeyCode());
         }
+    }
+
+    /*
+     * REQUIRES: autosave.json
+     * EFFECTS: reads from autosave and loads it
+     */
+    private void loadSave() {
+        // setVisible(true);
+        // setLocationRelativeTo(null);
+        // int n = JOptionPane.showConfirmDialog(this, "Would you like to load your
+        // saved data?", "Load",
+        // JOptionPane.YES_NO_OPTION);
+        // pack();
+
+        // if (n == JOptionPane.YES_OPTION) {
+        JsonReader jsonReader = new JsonReader("./data/autosave.json");
+        try {
+            if (!Main.restart) {
+                jsonReader.autoRead();
+            }
+        } catch (IOException e) {
+            e.getMessage();
+        }
+        // }
+        setVisible(false);
     }
 }
