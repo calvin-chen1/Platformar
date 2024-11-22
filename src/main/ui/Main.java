@@ -1,7 +1,5 @@
 package ui;
 
-
-
 import javax.swing.JFrame;
 
 import model.Collectible;
@@ -48,7 +46,7 @@ public class Main {
      * REQUIRES: autosave.json and levelframe.json
      * EFFECTS: deletes the files for autosave.json and levelframe.json
      */
-    private static void resetSave() {
+    protected static void resetSave() {
         String fileName1 = "./data/autosave.json";
         String fileName2 = "./data/levelframe.json";
         ArrayList<Object[][]> f = LevelFrame.getLevels();
@@ -67,7 +65,6 @@ public class Main {
         } catch (IOException e) {
             System.out.println("No previous level found.");
         }
-        menu();
     }
 
     /*
@@ -111,7 +108,7 @@ public class Main {
             }
         } while (input < 1 || input > levels.size());
         Collectible c = collectibles.get(input - 1);
-        LevelFrame game = new LevelFrame(levels.get(input - 1), c, c.getX1());
+        LevelFrame game = new LevelFrame(levels.get(input - 1), new Collectible(c.getX1(), c.getY1()), c.getX1());
         game.start();
     }
 
@@ -194,7 +191,6 @@ public class Main {
         if (input == 1) {
             do {
                 dGame = new GameFrame();
-                dGame.initialize();
                 waitForFrame();
             } while (restart);
         } else if (input == 2) {

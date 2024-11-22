@@ -68,7 +68,6 @@ public class JsonReader {
     /* REQUIRES: jsonArray
      * EFFECTS: goes through jsonArray and sets corresponding values to return as an Object[][]
      */
-    @SuppressWarnings("unchecked")
     private Object[][] parseLevels(JSONArray jsonArray) {
         Object[][] frame = new Object[8][8];
         List<Object> jsonList = jsonArray.toList();
@@ -88,7 +87,6 @@ public class JsonReader {
     /* REQUIRES: jsonArray
      * EFFECTS: goes through jsonArray and sets corresponding values to return as an Object[][]
      */
-    @SuppressWarnings("unchecked")
     private Object[][] parseLevelFrame(JSONArray jsonArray) {
         Object[][] frame = new Object[8][8];
         List<Object> jsonList = jsonArray.toList();

@@ -182,7 +182,6 @@ public class LevelFrame {
     public boolean checkCollectible() {
         this.collectible.collect(this.cube);
         if (collectible.getIsCollected()) {
-            clist.add(collectible);
             return true;
         }
         return false;
@@ -221,9 +220,10 @@ public class LevelFrame {
         replayPrompt(in);
     }
 
-    private void saveLevel() {
+    public void saveLevel() {
         JsonWriter writer = new JsonWriter("./data/autosave.json");
         levels.add(frame);
+        clist.add(collectible);
         try {
             writer.open();
             writer.autoWrite();
@@ -402,7 +402,7 @@ public class LevelFrame {
      * EFFECTS: prints the direction where the action is invalid
      */
     private void printDirection(int direction) {
-        switch(direction) {
+        switch (direction) {
             case 1:
                 System.out.println("Invalid action, please try 'a', 's', or 'd'");
                 break;
