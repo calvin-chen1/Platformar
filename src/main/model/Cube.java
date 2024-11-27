@@ -12,20 +12,15 @@ public class Cube implements Writable {
 
     private int x1; // the X value position of the cube
     private int y1; // the Y value position of the cube
-    private int width; // width of the cube
-    private int height; // height of the cube
 
     /*
      * REQUIRES: x and y positions to be valid positions on the frame
-     * EFFECTS: x is set to a given x; y is set to a given y; width and
-     * height are always set to 50 and 100; speedX and speedY is set to
-     * 1.0 at the beginning
+     * EFFECTS: x is set to a given x; y is set to a given y; speedX 
+     * and speedY is set to 1.0 at the beginning
      */
     public Cube(int x, int y) {
         this.x1 = x;
         this.y1 = y;
-        this.width = 50;
-        this.height = 100;
         this.speedX = 1.0;
         this.speedY = 1.0;
         this.type = Type.values()[1];
@@ -67,18 +62,17 @@ public class Cube implements Writable {
 
     /*
      * MODIFIES: this
-     * EFFECTS: y position is incremented based on velocity speedY,
-     * but eventually reaches a maximum height and falls
+     * EFFECTS: y position is incremented based on velocity speedY
      */
     public void jump() {
-        speedY = 1.0;
-        int originalY = this.y1;
+        this.speedY = 1.0;
         this.y1 += this.speedY;
-        if (y1 > originalY + 50) {
-            fall();
-        }
     }
 
+    /*
+     * MODIFIES: this
+     * EFFECTS: y position is decremented based on velocity speedY
+     */
     public void fall() {
         this.speedY = -1.0;
         this.y1 += this.speedY;
@@ -91,31 +85,6 @@ public class Cube implements Writable {
     public void resetPosition() {
         this.x1 = 1;
         this.y1 = 2;
-    }
-    
-    /*
-     * REQUIRES: x and y positions are touching a platform and a platform is
-     * specified
-     * MODIFIES: this
-     * EFFECTS: keeps the corresponding speedX or speedY (or both) to 0
-     * and returns true or false based on if collision is detected
-     */
-    public boolean detectCollision(Platform p) {
-        if (this.width + this.x1 >= p.getX1() - p.getWidth() && this.speedX > 0) {
-            speedX = 0.0;
-            return true;
-        } else if (this.x1 - this.width <= p.getWidth() + p.getX1() && this.speedX < 0) {
-            speedX = 0.0;
-            return true;
-        } else if (this.height + this.y1 >= p.getY1() - p.getHeight() && this.speedY > 0) {
-            speedY = 0.0;
-            return true;
-        } else if (this.y1 - this.height <= p.getHeight() + p.getY1() && this.speedY < 0) {
-            speedY = 0.0;
-            return true;
-        } else {
-            return false;
-        }
     }
 
     /* 
