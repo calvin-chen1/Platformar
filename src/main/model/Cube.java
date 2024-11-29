@@ -5,8 +5,7 @@ import persistence.Writable;
 
 // The Cube class represents the cube that the user will be controlling 
 // with set speed, borders, and position 
-public class Cube implements Writable {
-    private Type type;
+public class Cube {
     private double speedX; // X velocity of the cube
     private double speedY; // Y velocity of the cube
 
@@ -23,7 +22,6 @@ public class Cube implements Writable {
         this.y1 = y;
         this.speedX = 1.0;
         this.speedY = 1.0;
-        this.type = Type.values()[1];
     }
 
     public int getX1() {
@@ -87,16 +85,5 @@ public class Cube implements Writable {
         this.y1 = 2;
     }
 
-    /* 
-     * REQUIRES: JSONObject
-     * EFFECTS: converts object data to json formatting
-     */
-    @Override
-    public JSONObject toJson() {
-        JSONObject json = new JSONObject();
-        json.put("type", type);
-        json.put("x value", x1);
-        json.put("y value", y1);
-        return json;
-    }
+
 }
