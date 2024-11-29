@@ -3,6 +3,7 @@ package ui;
 import javax.swing.JFrame;
 
 import model.Collectible;
+import model.LevelFrame;
 import persistence.JsonReader;
 import persistence.JsonWriter;
 
@@ -15,13 +16,10 @@ import java.io.IOException;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 public class Main {
     protected static Scanner in;
 
-    private static LevelFrame game;
+    private static ConsoleFrame cGame;
     private static GameFrame dGame;
     protected static boolean restart;
 
@@ -43,31 +41,6 @@ public class Main {
     }
 
     /*
-     * REQUIRES: autosave.json and levelframe.json
-     * EFFECTS: deletes the files for autosave.json and levelframe.json
-     */
-    protected static void resetSave() {
-        String fileName1 = "./data/autosave.json";
-        String fileName2 = "./data/levelframe.json";
-        ArrayList<Object[][]> f = LevelFrame.getLevels();
-        ArrayList<Collectible> l = LevelFrame.getClist();
-        f.clear();
-        l.clear();
-        try {
-            Files.delete(Paths.get(fileName1));
-            System.out.println("Successfully deleted the levels save.");
-        } catch (IOException e) {
-            System.out.println("Save not found.");
-        }
-        try {
-            Files.delete(Paths.get(fileName2));
-            System.out.println("Successfully deleted the previous level save.");
-        } catch (IOException e) {
-            System.out.println("No previous level found.");
-        }
-    }
-
-    /*
      * MODIFIES: this
      * EFFECTS: loads LevelFrame from file
      */
@@ -75,7 +48,7 @@ public class Main {
         String source = "./data/levelframe.json";
         JsonReader jsonReader = new JsonReader(source);
         try {
-            game = jsonReader.read();
+            cGame = new ConsoleFrame(jsonReader.read());
             System.out.println("Previous level loaded.");
         } catch (IOException e) {
             System.out.println("Level does not exist.");
@@ -108,8 +81,8 @@ public class Main {
             }
         } while (input < 1 || input > levels.size());
         Collectible c = collectibles.get(input - 1);
-        LevelFrame game = new LevelFrame(levels.get(input - 1), new Collectible(c.getX1(), c.getY1()), c.getX1());
-        game.start();
+        cGame = new ConsoleFrame(new LevelFrame(levels.get(input - 1), new Collectible(c.getX1(), c.getY1()), c.getX1()));
+        cGame.start();
     }
 
     /*
@@ -160,21 +133,21 @@ public class Main {
     private static void menuInput(int i) {
         switch (i) {
             case 1:
-                game.start();
+                cGame.start();
                 break;
             case 2:
                 levelsMenu();
                 break;
             case 3:
-                game.viewCollectibles();
+                cGame.viewCollectibles();
                 break;
             case 4:
-                LevelFrame.clearScreen();
+                ConsoleFrame.clearScreen();
                 loadPreviousLevel();
                 break;
             case 5:
-                LevelFrame.clearScreen();
-                resetSave();
+                ConsoleFrame.clearScreen();
+                LevelFrame.resetSave();
                 break;
             case 6:
                 System.out.println("Thanks for playing!");
@@ -201,7 +174,7 @@ public class Main {
 
     private static void consoleRun() {
         do {
-            game = new LevelFrame();
+            cGame = new ConsoleFrame();
             menu();
         } while (restart);
     }

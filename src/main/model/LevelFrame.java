@@ -1,17 +1,16 @@
-package ui;
+package model;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.Arrays;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import model.Cube;
-import model.Platform;
-import model.Collectible;
 import persistence.JsonWriter;
+import ui.ConsoleFrame;
 
 // Constructs the frame which the game is played on
 public class LevelFrame {
@@ -21,8 +20,6 @@ public class LevelFrame {
     private int rand; // random number
     private static ArrayList<Collectible> clist = new ArrayList<>(); // list of collected collectibles
     private static ArrayList<Object[][]> levels = new ArrayList<>(); // list of levels finished or randomly added
-
-    private static Scanner in = Main.in;
 
     /*
      * REQUIRES: Indexes within the bounds of the 2D array
@@ -101,14 +98,6 @@ public class LevelFrame {
     }
 
     /*
-     * EFFECTS: clears the console screen
-     */
-    public static void clearScreen() {
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
-    }
-
-    /*
      * REQUIRES: the x and y position of the Collectible object, distX <
      * frame.length && distY < frame[0].length
      * EFFECTS: creates a path to the Collectible
@@ -144,36 +133,6 @@ public class LevelFrame {
     }
 
     /*
-     * REQUIRES: frame
-     * EFFECTS: prints out the frame that was generated/given, and
-     * each symbol is represented as an icon shaped similarly
-     * to a block
-     */
-    public void draw() {
-        System.out.println();
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                Object current = this.frame[i][j];
-                if (current == null) {
-                    System.out.print("    ");
-                } else if (current.toString().substring(0, 14).equals("model.Platform")) {
-                    Platform temp = (Platform) current;
-                    if (temp.getIsLava()) {
-                        System.out.print("[=] ");
-                    } else {
-                        System.out.print("[-] ");
-                    }
-                } else if (current.equals(this.cube)) {
-                    System.out.print("{:} ");
-                } else {
-                    System.out.print("(~) ");
-                }
-            }
-            System.out.println();
-        }
-    }
-
-    /*
      * REQUIRES: collectible and cube on the same indexes
      * MODIFIES: cList
      * EFFECTS: if the cube and the collectible are on the same indexes, then
@@ -188,36 +147,12 @@ public class LevelFrame {
     }
 
     /*
-     * REQUIRES: cList
-     * EFFECTS: prints out all of the collectibles along with their respective IDs
+     * EFFECTS: resets the position of cube and collectible
      */
-    public void viewCollectibles() {
-        System.out.println("Welcome to your collectible collection! Take a look.");
-        for (Collectible c : clist) {
-            System.out.println("Collectible #" + c.getId());
-        }
-    }
-
-    /*
-     * REQUIRES: draw, move, frame
-     * EFFECTS: the game is began through this method and controls the movement
-     * of the cube, while checking if the collectible is on the same index
-     * each movement and saving frame and the collectible after the game is
-     * complete
-     */
-    public void start() {
-        System.out.println("[=] is lava. {:} is you. (~) is your goal.");
-        draw();
-        System.out
-                .println("Controls: Type w for up, d for right, s for down, a for left. Type /q if you wish to leave.");
-        while (!checkCollectible()) {
-            String input = in.next();
-            move(input);
-        }
+    public void resetPosition() {
+        cube.resetPosition();
         frame[1][2] = cube;
         frame[rand][rand] = collectible;
-        savePrompt(in);
-        replayPrompt(in);
     }
 
     public void saveLevel() {
@@ -234,70 +169,26 @@ public class LevelFrame {
         }
     }
 
-    private void savePrompt(Scanner in) {
-        String input = null;
-        if (!containsLevelInSave()) {
-            System.out.println("Congratulations on finishing! Would you like to save your data? (y/n)");
-            do {
-                input = in.next().toLowerCase();
-                if (input.equals("y")) {
-                    saveLevel();
-                    break;
-                }
-            } while (!input.equals("n"));
-        }
-    }
-
-    private boolean containsLevelInSave() {
-        for (Object[][] f : levels) {
-            if (Arrays.deepEquals(f, frame)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void replayPrompt(Scanner in) {
-        System.out.println("Do you want to replay? (y/n)");
-        String input = in.next().toLowerCase();
-        do {
-            if (input.equals("y")) {
-                Main.restart = true;
-                break;
-            } else if (input.equals("n")) {
-                Main.restart = false;
-            }
-
-        } while (!input.equals("n"));
-    }
-
     /*
-     * REQUIRES: in >= 0
-     * EFFECTS: used to decrease the amount of lines that the movement functions
-     * take up
+     * REQUIRES: autosave.json and levelframe.json
+     * EFFECTS: deletes the files for autosave.json and levelframe.json
      */
-    public void move(String in) {
-        switch (in) {
-            case "w":
-                moveUp();
-                draw();
-                break;
-            case "d":
-                moveRight();
-                draw();
-                break;
-            case "s":
-                moveDown();
-                draw();
-                break;
-            case "a":
-                moveLeft();
-                draw();
-                break;
-            case "/q":
-                Main.savePreviousLevel(frame);
-                System.exit(0);
-                break;
+    public static void resetSave() {
+        String fileName1 = "./data/autosave.json";
+        String fileName2 = "./data/levelframe.json";
+        levels.clear();
+        clist.clear();
+        try {
+            Files.delete(Paths.get(fileName1));
+            System.out.println("Successfully deleted the levels save.");
+        } catch (IOException e) {
+            System.out.println("Save not found.");
+        }
+        try {
+            Files.delete(Paths.get(fileName2));
+            System.out.println("Successfully deleted the previous level save.");
+        } catch (IOException e) {
+            System.out.println("No previous level found.");
         }
     }
 
@@ -306,7 +197,7 @@ public class LevelFrame {
      * EFFECTS: moves the cube up if there is no platform
      */
     public void moveUp() {
-        clearScreen();
+        ConsoleFrame.clearScreen();
         if (cube.getX1() - 1 >= 0) {
             if (frame[cube.getX1() - 1][cube.getY1()] == null
                     || (frame[cube.getX1() - 1][cube.getY1()] instanceof Collectible)) {
@@ -326,7 +217,7 @@ public class LevelFrame {
      * EFFECTS: moves the cube right if there is no platform
      */
     public void moveRight() {
-        clearScreen();
+        ConsoleFrame.clearScreen();
         if (cube.getY1() + 1 < frame[0].length) {
             if (frame[cube.getX1()][cube.getY1() + 1] == null
                     || (frame[cube.getX1()][cube.getY1() + 1] instanceof Collectible)) {
@@ -346,7 +237,7 @@ public class LevelFrame {
      * EFFECTS: moves the cube down if there is no platform
      */
     public void moveDown() {
-        clearScreen();
+        ConsoleFrame.clearScreen();
         if (cube.getX1() + 1 < frame.length) {
             if (frame[cube.getX1() + 1][cube.getY1()] == null
                     || (frame[cube.getX1() + 1][cube.getY1()] instanceof Collectible)) {
@@ -366,7 +257,7 @@ public class LevelFrame {
      * EFFECTS: moves the cube left if there is no platform
      */
     public void moveLeft() {
-        clearScreen();
+        ConsoleFrame.clearScreen();
         if (cube.getY1() - 1 >= 0) {
             if (frame[cube.getX1()][cube.getY1() - 1] == null
                     || (frame[cube.getX1()][cube.getY1() - 1] instanceof Collectible)) {

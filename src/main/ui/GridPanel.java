@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 
 import model.Collectible;
 import model.Cube;
+import model.LevelFrame;
 import model.Platform;
 
 // creates the grid layout for GameFrame

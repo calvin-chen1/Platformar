@@ -1,9 +1,10 @@
 package persistence;
 
-import ui.LevelFrame;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import model.LevelFrame;
+
 import java.io.*;
 
 public class JsonWriter {

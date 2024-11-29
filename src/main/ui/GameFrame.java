@@ -2,8 +2,8 @@ package ui;
 
 import java.awt.BorderLayout;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
+import model.LevelFrame;
 import persistence.JsonReader;
 
 import java.awt.event.KeyAdapter;

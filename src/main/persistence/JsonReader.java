@@ -11,7 +11,6 @@ import org.json.*;
 import java.util.HashMap;
 import java.util.ArrayList;
 
-import ui.LevelFrame;
 import model.*;
 
 public class JsonReader {

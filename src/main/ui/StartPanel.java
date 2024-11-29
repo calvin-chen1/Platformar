@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import model.Collectible;
+import model.LevelFrame;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -97,7 +98,7 @@ public class StartPanel extends JPanel implements ActionListener {
         } else if (e.getSource() == ctblesView) {
             collectiblesView();
         } else if (e.getSource() == reset) {
-            Main.resetSave();
+            LevelFrame.resetSave();
             JOptionPane.showMessageDialog(this, "Reset all saves.");
         } else if (e.getSource() == submit) {
             sendInput();
