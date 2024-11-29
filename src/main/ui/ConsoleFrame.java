@@ -23,6 +23,7 @@ public class ConsoleFrame {
         this.lf = lf;
         frame = lf.getFrame();
     }
+    
     /*
      * REQUIRES: draw, move, frame
      * EFFECTS: the game is began through this method and controls the movement

@@ -1,8 +1,5 @@
 package model;
 
-import org.json.JSONObject;
-import persistence.Writable;
-
 // The Platform class represents each block that the user as a Cube
 // moves on and collides with
 public class Platform {

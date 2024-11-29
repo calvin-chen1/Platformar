@@ -98,7 +98,7 @@ public class StartPanel extends JPanel implements ActionListener {
         } else if (e.getSource() == ctblesView) {
             collectiblesView();
         } else if (e.getSource() == reset) {
-            LevelFrame.resetSave();
+            LevelFrame.resetSave(true);
             JOptionPane.showMessageDialog(this, "Reset all saves.");
         } else if (e.getSource() == submit) {
             sendInput();

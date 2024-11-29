@@ -158,7 +158,9 @@ public class LevelFrame {
     public void saveLevel() {
         JsonWriter writer = new JsonWriter("./data/autosave.json");
         levels.add(frame);
+        EventLog.getInstance().logEvent(new Event("Level added to level list"));
         clist.add(collectible);
+        EventLog.getInstance().logEvent(new Event("Collectible added to collectible list"));
         try {
             writer.open();
             writer.autoWrite();
@@ -173,22 +175,36 @@ public class LevelFrame {
      * REQUIRES: autosave.json and levelframe.json
      * EFFECTS: deletes the files for autosave.json and levelframe.json
      */
-    public static void resetSave() {
+    public static void resetSave(boolean print) {
         String fileName1 = "./data/autosave.json";
         String fileName2 = "./data/levelframe.json";
         levels.clear();
+        EventLog.getInstance().logEvent(new Event("All levels were removed"));
         clist.clear();
+        EventLog.getInstance().logEvent(new Event("All collected collectibles were removed"));
+        determinePrint(print, fileName1, fileName2);
+    }
+
+    private static void determinePrint(boolean print, String fileName1, String fileName2) {
         try {
             Files.delete(Paths.get(fileName1));
-            System.out.println("Successfully deleted the levels save.");
+            if (print) {
+                System.out.println("Successfully deleted the levels save.");
+            }
         } catch (IOException e) {
-            System.out.println("Save not found.");
+            if (print) {
+                System.out.println("Save not found.");
+            }
         }
         try {
             Files.delete(Paths.get(fileName2));
-            System.out.println("Successfully deleted the previous level save.");
+            if (print) {
+                System.out.println("Successfully deleted the previous level save.");
+            }
         } catch (IOException e) {
-            System.out.println("No previous level found.");
+            if (print) {
+                System.out.println("No previous level found.");
+            }
         }
     }
 
@@ -275,7 +291,8 @@ public class LevelFrame {
     /*
      * REQUIRES: p, direction
      * EFFECTS: determines the type of platform and prints the corresponding message
-     * and determines direction by representing directions in numbers 1 to 4 as north to west
+     * and determines direction by representing directions in numbers 1 to 4 as
+     * north to west
      */
     private void determinePlatform(Platform p, int direction) {
         if (p.getIsLava()) {
@@ -287,7 +304,7 @@ public class LevelFrame {
             printDirection(direction);
         }
     }
-    
+
     /*
      * REQUIRES: direction
      * EFFECTS: prints the direction where the action is invalid
@@ -304,7 +321,7 @@ public class LevelFrame {
                 System.out.println("Invalid action, please try 'a', 'w', or 'd'");
                 break;
             case 4:
-                System.out.println("Invalid action, please try 'a', 'w', or 's'");            
+                System.out.println("Invalid action, please try 'a', 'w', or 's'");
                 break;
         }
     }
@@ -341,5 +358,11 @@ public class LevelFrame {
             json.put(f);
         }
         return json;
+    }
+
+    public static void printLog() {
+        for (Event e : EventLog.getInstance()) {
+            System.out.println(e);
+        }
     }
 }

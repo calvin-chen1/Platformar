@@ -26,7 +26,7 @@ public class GameFrame extends JFrame {
         spanel = new StartPanel(this);
         lpanel = new LegendPanel();
         gpanel = new GridPanel(this, lpanel);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         add(spanel);
         pack();
         setLocationRelativeTo(null);

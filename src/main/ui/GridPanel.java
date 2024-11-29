@@ -134,7 +134,7 @@ public class GridPanel extends JPanel {
         updateBoard(c);
         lpanel.updateMsg();
         System.out.flush();
-        System.setOut(System.out);
+        lpanel.revertOutput();
     }
 
 

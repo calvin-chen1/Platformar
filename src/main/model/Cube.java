@@ -1,8 +1,5 @@
 package model;
 
-import org.json.JSONObject;
-import persistence.Writable;
-
 // The Cube class represents the cube that the user will be controlling 
 // with set speed, borders, and position 
 public class Cube {

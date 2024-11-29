@@ -80,7 +80,7 @@ public class LevelTest {
         testFrame.saveLevel();
         assertEquals(1, LevelFrame.getLevels().size());
         assertEquals(1, LevelFrame.getLevels().size());
-        LevelFrame.resetSave();
+        LevelFrame.resetSave(true);
         assertEquals(0, LevelFrame.getLevels().size());
         assertEquals(0, LevelFrame.getLevels().size());
     }

@@ -45,6 +45,7 @@ public class Main {
      * EFFECTS: loads LevelFrame from file
      */
     private static void loadPreviousLevel() {
+        ConsoleFrame.clearScreen();
         String source = "./data/levelframe.json";
         JsonReader jsonReader = new JsonReader(source);
         try {
@@ -81,7 +82,8 @@ public class Main {
             }
         } while (input < 1 || input > levels.size());
         Collectible c = collectibles.get(input - 1);
-        cGame = new ConsoleFrame(new LevelFrame(levels.get(input - 1), new Collectible(c.getX1(), c.getY1()), c.getX1()));
+        cGame = new ConsoleFrame(
+                new LevelFrame(levels.get(input - 1), new Collectible(c.getX1(), c.getY1()), c.getX1()));
         cGame.start();
     }
 
@@ -142,12 +144,11 @@ public class Main {
                 cGame.viewCollectibles();
                 break;
             case 4:
-                ConsoleFrame.clearScreen();
                 loadPreviousLevel();
                 break;
             case 5:
                 ConsoleFrame.clearScreen();
-                LevelFrame.resetSave();
+                LevelFrame.resetSave(false);
                 break;
             case 6:
                 System.out.println("Thanks for playing!");
@@ -169,6 +170,7 @@ public class Main {
         } else if (input == 2) {
             consoleRun();
         }
+        LevelFrame.printLog();
         in.close();
     }
 

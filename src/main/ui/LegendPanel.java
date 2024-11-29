@@ -15,6 +15,7 @@ public class LegendPanel extends JPanel {
     private static final String GUIDE_TXT = "Blue is you. Red is lava. Yellow is the goal."; // guide text
     private JLabel msgLbl; // represents the message displayed
     private ByteArrayOutputStream baos; // the redirected connection from console output
+    private PrintStream stdOut; // the old output saved
 
     /*
      * EFFECTS: creates a JPanel that represents the legend and the corresponding messages 
@@ -26,6 +27,7 @@ public class LegendPanel extends JPanel {
         msgLbl.setPreferredSize(new Dimension(250, 30));
         add(msgLbl);
         add(Box.createHorizontalStrut(5));
+        stdOut = System.out;
     }
 
     /*
@@ -45,5 +47,9 @@ public class LegendPanel extends JPanel {
     public void updateMsg() {
         msgLbl.setText(baos.toString().substring(7));
         repaint();
+    }
+
+    public void revertOutput() {
+        System.setOut(stdOut);
     }
 }

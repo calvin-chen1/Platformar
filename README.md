@@ -18,3 +18,17 @@ experience for me to see if it is something I want to continue doing.
 - As a user, I have to be able to complete levels with a fair amount of challenge.
 - As a user, I want my collectibles to be saved across multiple sessions and able to reset my list of them at any given time.
 - As a user, I also want the same to apply to levels, where I can save, view, and reset the saved list.
+
+> #### Phase 4: Task 2
+>
+> Fri Nov 29 01:59:17 PST 2024
+> All levels were removed
+>
+> Fri Nov 29 01:59:17 PST 2024
+> All collected collectibles were removed
+>
+> Fri Nov 29 01:59:28 PST 2024
+> Level added to level list
+>
+> Fri Nov 29 01:59:28 PST 2024
+> Collectible added to collectible list
